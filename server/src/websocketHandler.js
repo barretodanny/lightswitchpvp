@@ -17,8 +17,10 @@ const {
 let clients = [];
 
 function handleWebSocketConnection(socket) {
+  // store socket in list of clients
   clients.push(socket);
 
+  // send client JSON of their user obj
   const self = connectNewUser(socket);
   const res = {
     type: "GET_SELF",
@@ -26,15 +28,11 @@ function handleWebSocketConnection(socket) {
   };
   socket.send(JSON.stringify(res));
 
+  // send all clients updated list of connected users
   const connectedUsers = getConnectedUsers();
-  clients.forEach((client) => {
-    const res = {
-      type: "GET_CONNECTED_USERS",
-      data: connectedUsers,
-    };
-    client.send(JSON.stringify(res));
-  });
+  sendDataToAllClients(clients, "GET_CONNECTED_USERS", connectedUsers);
 
+  // setup on message and on close socket handlers
   socket.on("message", (message) => handleWebSocketMessage(socket, message));
   socket.on("close", () => handleWebSocketDisconnection(socket));
 }
@@ -44,6 +42,7 @@ function handleWebSocketMessage(socket, message) {
 
   switch (req.type) {
     case "UPDATE_USERNAME":
+      // send client JSON of their updated user obj
       const updatedUser = updateUsername(socket, req.payload);
       const res = {
         type: "GET_SELF",
@@ -51,14 +50,9 @@ function handleWebSocketMessage(socket, message) {
       };
       socket.send(JSON.stringify(res));
 
-      clients.forEach((client) => {
-        const connectedUsers = getConnectedUsers();
-        const res = {
-          type: "GET_CONNECTED_USERS",
-          data: connectedUsers,
-        };
-        client.send(JSON.stringify(res));
-      });
+      // send all clients updated list of connected users
+      const connectedUsers = getConnectedUsers();
+      sendDataToAllClients(clients, "GET_CONNECTED_USERS", connectedUsers);
       break;
 
     default:
@@ -67,15 +61,20 @@ function handleWebSocketMessage(socket, message) {
 }
 
 function handleWebSocketDisconnection(socket) {
+  // disconnected user and remove socket from list of clients
   disconnectUser(socket);
-
   clients = clients.filter((client) => client !== socket);
-  const connectedUsers = getConnectedUsers();
 
+  // send all clients updated list of connected users
+  const connectedUsers = getConnectedUsers();
+  sendDataToAllClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+}
+
+function sendDataToAllClients(clients, type, data) {
   clients.forEach((client) => {
     const res = {
-      type: "GET_CONNECTED_USERS",
-      data: connectedUsers,
+      type,
+      data,
     };
     client.send(JSON.stringify(res));
   });

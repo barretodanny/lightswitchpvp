@@ -22,6 +22,7 @@ const {
   GET_LOBBIES,
   CREATE_LOBBY,
   GET_LOBBY,
+  JOIN_LOBBY,
 } = require("./messageTypes");
 
 let clients = [];
@@ -51,7 +52,7 @@ function handleWebSocketMessage(socket, message) {
   const req = JSON.parse(message);
 
   switch (req.type) {
-    case UPDATE_USERNAME:
+    case UPDATE_USERNAME: {
       // send client JSON of their updated user obj
       const updatedUser = updateUsername(socket, req.payload);
       sendDataToClient(socket, GET_SELF, updatedUser);
@@ -60,7 +61,8 @@ function handleWebSocketMessage(socket, message) {
       const connectedUsers = getConnectedUsers();
       sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
       break;
-    case CREATE_LOBBY:
+    }
+    case CREATE_LOBBY: {
       // create new lobby and return updated self to client
       let self = getSelf(socket);
       let newLobby = createLobby(self, req.payload);
@@ -76,6 +78,25 @@ function handleWebSocketMessage(socket, message) {
       sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
       const newConnectedUsersList = getConnectedUsers();
       sendDataToClients(clients, GET_CONNECTED_USERS, newConnectedUsersList);
+      break;
+    }
+    case JOIN_LOBBY: {
+      let self = getSelf(socket);
+      let lobby = joinLobby(self, req.payload);
+      self = updateUserLobby(socket, lobby.lobbyId);
+
+      sendDataToClient(socket, GET_SELF, self);
+
+      // send lobbydetails to client
+      sendDataToClient(socket, GET_LOBBY, lobby);
+
+      // send updated list of lobbies and connected users to all clients
+      const newLobbiesList = getLobbies();
+      sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+      const newConnectedUsersList = getConnectedUsers();
+      sendDataToClients(clients, GET_CONNECTED_USERS, newConnectedUsersList);
+      break;
+    }
 
     default:
       break;

@@ -10,7 +10,7 @@ interface Lobby {
   lobbyId: string;
   creatorId: string;
   lobbyName: string;
-  users: string[];
+  connectedUsers: string[];
   lobbyState: string;
   user1Score: string;
   user2Score: string;
@@ -42,6 +42,14 @@ function App() {
     const req = {
       type: "CREATE_LOBBY",
       payload: lobbyNameField,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
+  function handleJoinLobby(lobbyId: string) {
+    const req = {
+      type: "JOIN_LOBBY",
+      payload: lobbyId,
     };
     socket?.send(JSON.stringify(req));
   }
@@ -129,7 +137,13 @@ function App() {
           {lobbies.map((lobby) => {
             return (
               <p key={lobby.lobbyId}>
-                lobbyId: {lobby.lobbyId}, lobbyName: {lobby.lobbyName}
+                lobbyId: {lobby.lobbyId}, lobbyName: {lobby.lobbyName}, # users:{" "}
+                {lobby.connectedUsers.length}
+                {parseInt(self.lobby) === 0 && (
+                  <button onClick={() => handleJoinLobby(lobby.lobbyId)}>
+                    Join
+                  </button>
+                )}
               </p>
             );
           })}

@@ -4,6 +4,7 @@ const UPDATE_USERNAME = "UPDATE_USERNAME";
 const GET_LOBBIES = "GET_LOBBIES";
 const GET_LOBBY = "GET_LOBBY";
 const CREATE_LOBBY = "CREATE_LOBBY";
+const JOIN_LOBBY = "JOIN_LOBBY";
 
 module.exports = {
   GET_SELF,
@@ -12,4 +13,5 @@ module.exports = {
   GET_LOBBIES,
   GET_LOBBY,
   CREATE_LOBBY,
+  JOIN_LOBBY,
 };

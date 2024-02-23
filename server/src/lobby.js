@@ -31,16 +31,16 @@ function getCurrentLobby(self) {
   return lobbies.get(self.lobby);
 }
 
-function joinLobby(socket, lobbyId) {
+function joinLobby(self, lobbyId) {
   const lobby = lobbies.get(lobbyId);
-  lobby.connectedUsers.push(socket);
+  lobby.connectedUsers.push(self);
+  return lobby;
 }
 
 function leaveLobby(socket, userId, lobbyId) {
   const lobby = lobbies.get(lobbyId);
 
   if (userId === lobby.creatorId) {
-    console.log(userId, lobby.creatorId);
     const connectedUsers = lobby.connectedUsers;
     deleteLobby(lobbyId);
     return connectedUsers;

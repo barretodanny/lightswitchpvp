@@ -3,6 +3,8 @@ const {
   disconnectUser,
   getConnectedUsers,
   updateUsername,
+  getSelf,
+  updateUserLobby,
 } = require("./user");
 const {
   getLobbies,
@@ -17,6 +19,9 @@ const {
   GET_SELF,
   GET_CONNECTED_USERS,
   UPDATE_USERNAME,
+  GET_LOBBIES,
+  CREATE_LOBBY,
+  GET_LOBBY,
 } = require("./messageTypes");
 
 let clients = [];
@@ -32,6 +37,10 @@ function handleWebSocketConnection(socket) {
   // send all clients updated list of connected users
   const connectedUsers = getConnectedUsers();
   sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
+
+  // get list of lobbies
+  const lobbies = getLobbies();
+  sendDataToClient(socket, GET_LOBBIES, lobbies);
 
   // setup on message and on close socket handlers
   socket.on("message", (message) => handleWebSocketMessage(socket, message));
@@ -51,6 +60,22 @@ function handleWebSocketMessage(socket, message) {
       const connectedUsers = getConnectedUsers();
       sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
       break;
+    case CREATE_LOBBY:
+      // create new lobby and return updated self to client
+      let self = getSelf(socket);
+      let newLobby = createLobby(self, req.payload);
+      self = updateUserLobby(socket, newLobby.lobbyId);
+
+      sendDataToClient(socket, GET_SELF, self);
+
+      // send lobby details to client
+      sendDataToClient(socket, GET_LOBBY, newLobby);
+
+      // send updated list of lobbies and connected users to all clients
+      const newLobbiesList = getLobbies();
+      sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+      const newConnectedUsersList = getConnectedUsers();
+      sendDataToClients(clients, GET_CONNECTED_USERS, newConnectedUsersList);
 
     default:
       break;

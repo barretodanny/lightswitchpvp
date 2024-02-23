@@ -58,14 +58,14 @@ function leaveLobby(socket, userId, lobbyId) {
   return 0;
 }
 
-function createLobby(socket, self, lobbyName) {
+function createLobby(self, lobbyName) {
   const lobbyId = nextLobbyId++;
 
   const newLobby = {
     lobbyId,
     creatorId: self.userId,
     lobbyName,
-    connectedUsers: [socket],
+    connectedUsers: [self],
     lobbyState: "SETUP",
     user1Score: 0,
     user2Score: 0,

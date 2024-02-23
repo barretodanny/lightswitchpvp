@@ -6,11 +6,25 @@ interface User {
   lobby: string;
 }
 
+interface Lobby {
+  lobbyId: string;
+  creatorId: string;
+  lobbyName: string;
+  users: string[];
+  lobbyState: string;
+  user1Score: string;
+  user2Score: string;
+  lightState: string;
+  gameTimer: string;
+}
+
 function App() {
   const [socket, setSocket] = useState<WebSocket>();
   const [self, setSelf] = useState<User | undefined>();
   const [usernameField, setUsernameField] = useState("");
+  const [lobbyNameField, setLobbyNameField] = useState("");
   const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
+  const [lobbies, setLobbies] = useState<Lobby[]>([]);
 
   function handleUpdateUsername(e: React.FormEvent) {
     e.preventDefault();
@@ -18,6 +32,16 @@ function App() {
     const req = {
       type: "UPDATE_USERNAME",
       payload: usernameField,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
+  function handleCreateLobby(e: React.FormEvent) {
+    e.preventDefault();
+
+    const req = {
+      type: "CREATE_LOBBY",
+      payload: lobbyNameField,
     };
     socket?.send(JSON.stringify(req));
   }
@@ -30,15 +54,17 @@ function App() {
             const socket = new WebSocket("ws://localhost:3000");
             socket.onmessage = async (event) => {
               const data = JSON.parse(event.data);
+              console.log(data);
 
-              if (data.type === "GET_SELF") {
+              if (data.messageType === "GET_SELF") {
                 const self = data.data;
                 setSelf(self);
-              }
-
-              if (data.type === "GET_CONNECTED_USERS") {
+              } else if (data.messageType === "GET_CONNECTED_USERS") {
                 const connectedUsers = data.data;
                 setConnectedUsers(connectedUsers);
+              } else if (data.messageType === "GET_LOBBIES") {
+                const lobbies = data.data;
+                setLobbies(lobbies);
               }
             };
             setSocket(socket);
@@ -72,6 +98,19 @@ function App() {
         </form>
       </div>
 
+      {parseInt(self.lobby) === 0 && (
+        <div>
+          <form onSubmit={handleCreateLobby}>
+            <input
+              type="text"
+              value={lobbyNameField}
+              onChange={(e) => setLobbyNameField(e.target.value)}
+            />
+            <button type="submit">Create Lobby</button>
+          </form>
+        </div>
+      )}
+
       <h3>Connected users:</h3>
       {connectedUsers.map((user) => {
         return (
@@ -81,6 +120,21 @@ function App() {
           </p>
         );
       })}
+
+      <h3>Lobbies:</h3>
+      {lobbies.length === 0 ? (
+        <p>No Lobbies Found</p>
+      ) : (
+        <div>
+          {lobbies.map((lobby) => {
+            return (
+              <p key={lobby.lobbyId}>
+                lobbyId: {lobby.lobbyId}, lobbyName: {lobby.lobbyName}
+              </p>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

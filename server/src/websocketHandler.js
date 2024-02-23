@@ -22,15 +22,11 @@ function handleWebSocketConnection(socket) {
 
   // send client JSON of their user obj
   const self = connectNewUser(socket);
-  const res = {
-    type: "GET_SELF",
-    data: self,
-  };
-  socket.send(JSON.stringify(res));
+  sendDataToClient(socket, "GET_SELF", self);
 
   // send all clients updated list of connected users
   const connectedUsers = getConnectedUsers();
-  sendDataToAllClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+  sendDataToClients(clients, "GET_CONNECTED_USERS", connectedUsers);
 
   // setup on message and on close socket handlers
   socket.on("message", (message) => handleWebSocketMessage(socket, message));
@@ -44,15 +40,11 @@ function handleWebSocketMessage(socket, message) {
     case "UPDATE_USERNAME":
       // send client JSON of their updated user obj
       const updatedUser = updateUsername(socket, req.payload);
-      const res = {
-        type: "GET_SELF",
-        data: updatedUser,
-      };
-      socket.send(JSON.stringify(res));
+      sendDataToClient(socket, "GET_SELF", updatedUser);
 
       // send all clients updated list of connected users
       const connectedUsers = getConnectedUsers();
-      sendDataToAllClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+      sendDataToClients(clients, "GET_CONNECTED_USERS", connectedUsers);
       break;
 
     default:
@@ -67,16 +59,20 @@ function handleWebSocketDisconnection(socket) {
 
   // send all clients updated list of connected users
   const connectedUsers = getConnectedUsers();
-  sendDataToAllClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+  sendDataToClients(clients, "GET_CONNECTED_USERS", connectedUsers);
 }
 
-function sendDataToAllClients(clients, type, data) {
+function sendDataToClient(client, type, data) {
+  const res = {
+    type,
+    data,
+  };
+  client.send(JSON.stringify(res));
+}
+
+function sendDataToClients(clients, type, data) {
   clients.forEach((client) => {
-    const res = {
-      type,
-      data,
-    };
-    client.send(JSON.stringify(res));
+    sendDataToClient(client, type, data);
   });
 }
 

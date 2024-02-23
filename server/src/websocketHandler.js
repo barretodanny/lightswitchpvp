@@ -13,6 +13,11 @@ const {
   updateLobbyName,
   deleteLobby,
 } = require("./lobby");
+const {
+  GET_SELF,
+  GET_CONNECTED_USERS,
+  UPDATE_USERNAME,
+} = require("./messageTypes");
 
 let clients = [];
 
@@ -22,11 +27,11 @@ function handleWebSocketConnection(socket) {
 
   // send client JSON of their user obj
   const self = connectNewUser(socket);
-  sendDataToClient(socket, "GET_SELF", self);
+  sendDataToClient(socket, GET_SELF, self);
 
   // send all clients updated list of connected users
   const connectedUsers = getConnectedUsers();
-  sendDataToClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+  sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
 
   // setup on message and on close socket handlers
   socket.on("message", (message) => handleWebSocketMessage(socket, message));
@@ -40,11 +45,11 @@ function handleWebSocketMessage(socket, message) {
     case "UPDATE_USERNAME":
       // send client JSON of their updated user obj
       const updatedUser = updateUsername(socket, req.payload);
-      sendDataToClient(socket, "GET_SELF", updatedUser);
+      sendDataToClient(socket, GET_SELF, updatedUser);
 
       // send all clients updated list of connected users
       const connectedUsers = getConnectedUsers();
-      sendDataToClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+      sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
       break;
 
     default:
@@ -59,7 +64,7 @@ function handleWebSocketDisconnection(socket) {
 
   // send all clients updated list of connected users
   const connectedUsers = getConnectedUsers();
-  sendDataToClients(clients, "GET_CONNECTED_USERS", connectedUsers);
+  sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
 }
 
 function sendDataToClient(client, type, data) {

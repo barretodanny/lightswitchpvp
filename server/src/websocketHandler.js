@@ -42,7 +42,7 @@ function handleWebSocketMessage(socket, message) {
   const req = JSON.parse(message);
 
   switch (req.type) {
-    case "UPDATE_USERNAME":
+    case UPDATE_USERNAME:
       // send client JSON of their updated user obj
       const updatedUser = updateUsername(socket, req.payload);
       sendDataToClient(socket, GET_SELF, updatedUser);
@@ -67,17 +67,17 @@ function handleWebSocketDisconnection(socket) {
   sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
 }
 
-function sendDataToClient(client, type, data) {
+function sendDataToClient(client, messageType, data) {
   const res = {
-    type,
+    messageType,
     data,
   };
   client.send(JSON.stringify(res));
 }
 
-function sendDataToClients(clients, type, data) {
+function sendDataToClients(clients, messageType, data) {
   clients.forEach((client) => {
-    sendDataToClient(client, type, data);
+    sendDataToClient(client, messageType, data);
   });
 }
 

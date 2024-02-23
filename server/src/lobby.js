@@ -37,18 +37,18 @@ function joinLobby(self, lobbyId) {
   return lobby;
 }
 
-function leaveLobby(socket, userId, lobbyId) {
+function leaveLobby(self, lobbyId) {
   const lobby = lobbies.get(lobbyId);
-
-  if (userId === lobby.creatorId) {
-    const connectedUsers = lobby.connectedUsers;
-    deleteLobby(lobbyId);
-    return connectedUsers;
-  }
+  const userId = self.userId;
 
   const filteredConnectedUsers = lobby.connectedUsers.filter(
-    (userSocket) => userSocket !== socket
+    (user) => user.userId !== userId
   );
+
+  if (userId === lobby.creatorId) {
+    deleteLobby(lobbyId);
+    return filteredConnectedUsers;
+  }
 
   lobbies.set(lobbyId, {
     ...lobby,

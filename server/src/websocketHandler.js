@@ -5,6 +5,7 @@ const {
   updateUsername,
   getSelf,
   updateUserLobby,
+  getSocketByUser,
 } = require("./user");
 const {
   getLobbies,
@@ -104,6 +105,27 @@ function handleWebSocketMessage(socket, message) {
 }
 
 function handleWebSocketDisconnection(socket) {
+  let self = getSelf(socket);
+
+  // if client is in a lobby, leave the lobby
+  if (self.lobby) {
+    // if client was the creator of the lobby, leaveLobby() returns a list of the rest of the
+    // users who were connected to the lobby so that we can update their lobby value
+    // (set back to 0, which is the main lobby)
+    const result = leaveLobby(self, self.lobby);
+
+    if (result) {
+      result.forEach((user) => {
+        const userSocket = getSocketByUser(user);
+        const updatedUser = updateUserLobby(userSocket, 0);
+        sendDataToClient(userSocket, GET_SELF, updatedUser);
+      });
+    }
+
+    // send updated list of lobbies and connected users to all clients
+    const newLobbiesList = getLobbies();
+    sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+  }
   // disconnected user and remove socket from list of clients
   disconnectUser(socket);
   clients = clients.filter((client) => client !== socket);

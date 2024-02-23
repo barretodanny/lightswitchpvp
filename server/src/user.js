@@ -41,6 +41,17 @@ function getSelf(socket) {
   return users.get(socket);
 }
 
+function getSocketByUser(user) {
+  const userId = user.userId;
+  for (let [socket, user] of users.entries()) {
+    if (user.userId === userId) {
+      return socket;
+    }
+  }
+
+  return null;
+}
+
 function updateUsername(socket, newUsername) {
   const user = users.get(socket);
   const updatedUser = {
@@ -80,6 +91,7 @@ module.exports = {
   disconnectUser,
   getConnectedUsers,
   getSelf,
+  getSocketByUser,
   updateUsername,
   updateUserLobby,
   printUsers,

@@ -25,6 +25,7 @@ const {
   GET_LOBBY,
   JOIN_LOBBY,
   LEAVE_LOBBY,
+  UPDATE_LOBBY_NAME,
 } = require("./messageTypes");
 
 let clients = [];
@@ -121,6 +122,17 @@ function handleWebSocketMessage(socket, message) {
       sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
       const connectedUsers = getConnectedUsers();
       sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
+    }
+    case UPDATE_LOBBY_NAME: {
+      const self = getSelf(socket);
+      const updatedLobby = updateLobbyName(self, self.lobby, req.payload);
+
+      if (updatedLobby) {
+        sendDataToClient(socket, GET_LOBBY, updatedLobby);
+
+        const newLobbiesList = getLobbies();
+        sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+      }
     }
 
     default:

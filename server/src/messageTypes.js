@@ -6,6 +6,7 @@ const GET_LOBBY = "GET_LOBBY";
 const CREATE_LOBBY = "CREATE_LOBBY";
 const JOIN_LOBBY = "JOIN_LOBBY";
 const LEAVE_LOBBY = "LEAVE_LOBBY";
+const UPDATE_LOBBY_NAME = "UPDATE_LOBBY_NAME";
 
 module.exports = {
   GET_SELF,
@@ -16,4 +17,5 @@ module.exports = {
   CREATE_LOBBY,
   JOIN_LOBBY,
   LEAVE_LOBBY,
+  UPDATE_LOBBY_NAME,
 };

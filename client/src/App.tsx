@@ -62,6 +62,16 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleUpdateLobbyName(e: React.FormEvent) {
+    e.preventDefault();
+
+    const req = {
+      type: "UPDATE_LOBBY_NAME",
+      payload: lobbyNameField,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   if (!socket) {
     return (
       <div>
@@ -144,20 +154,32 @@ function App() {
         <div>
           {lobbies.map((lobby) => {
             return (
-              <p key={lobby.lobbyId}>
-                lobbyId: {lobby.lobbyId}, lobbyName: {lobby.lobbyName}, # users:{" "}
-                {lobby.connectedUsers.length}
-                {parseInt(self.lobby) === 0 && (
-                  <button onClick={() => handleJoinLobby(lobby.lobbyId)}>
-                    Join
-                  </button>
+              <div key={lobby.lobbyId}>
+                <p>
+                  lobbyId: {lobby.lobbyId}, lobbyName: {lobby.lobbyName}, #
+                  users: {lobby.connectedUsers.length}
+                  {parseInt(self.lobby) === 0 && (
+                    <button onClick={() => handleJoinLobby(lobby.lobbyId)}>
+                      Join
+                    </button>
+                  )}
+                  {parseInt(self.lobby) === parseInt(lobby.lobbyId) && (
+                    <button onClick={() => handleLeaveLobby(lobby.lobbyId)}>
+                      Leave
+                    </button>
+                  )}
+                </p>
+                {parseInt(lobby.creatorId) === parseInt(self?.userId) && (
+                  <form onSubmit={handleUpdateLobbyName}>
+                    <input
+                      type="text"
+                      value={lobbyNameField}
+                      onChange={(e) => setLobbyNameField(e.target.value)}
+                    />
+                    <button type="submit">Update Lobby Name</button>
+                  </form>
                 )}
-                {parseInt(self.lobby) === parseInt(lobby.lobbyId) && (
-                  <button onClick={() => handleLeaveLobby(lobby.lobbyId)}>
-                    Leave
-                  </button>
-                )}
-              </p>
+              </div>
             );
           })}
         </div>

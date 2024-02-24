@@ -24,6 +24,7 @@ const {
   CREATE_LOBBY,
   GET_LOBBY,
   JOIN_LOBBY,
+  LEAVE_LOBBY,
 } = require("./messageTypes");
 
 let clients = [];
@@ -97,6 +98,29 @@ function handleWebSocketMessage(socket, message) {
       const newConnectedUsersList = getConnectedUsers();
       sendDataToClients(clients, GET_CONNECTED_USERS, newConnectedUsersList);
       break;
+    }
+    case LEAVE_LOBBY: {
+      let self = getSelf(socket);
+      const result = leaveLobby(self, self.lobby);
+
+      // if creator, send the rest of the players in to lobby to main lobby
+      if (result) {
+        result.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          const updatedUser = updateUserLobby(userSocket, 0);
+          sendDataToClient(userSocket, GET_SELF, updatedUser);
+        });
+      }
+
+      // send client updated self
+      self = updateUserLobby(socket, 0);
+      sendDataToClient(socket, GET_SELF, self);
+
+      // send updated list of lobbies and connected users to all clients
+      const newLobbiesList = getLobbies();
+      sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+      const connectedUsers = getConnectedUsers();
+      sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
     }
 
     default:

@@ -54,6 +54,14 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleLeaveLobby(lobbyId: string) {
+    const req = {
+      type: "LEAVE_LOBBY",
+      payload: lobbyId,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   if (!socket) {
     return (
       <div>
@@ -142,6 +150,11 @@ function App() {
                 {parseInt(self.lobby) === 0 && (
                   <button onClick={() => handleJoinLobby(lobby.lobbyId)}>
                     Join
+                  </button>
+                )}
+                {parseInt(self.lobby) === parseInt(lobby.lobbyId) && (
+                  <button onClick={() => handleLeaveLobby(lobby.lobbyId)}>
+                    Leave
                   </button>
                 )}
               </p>

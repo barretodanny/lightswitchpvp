@@ -1,0 +1,39 @@
+.lightbulb {
+  display: flex;
+  flex-direction: column;
+  height: 375px;
+  width: 225px;
+}
+
+.bulb {
+  position: relative;
+  height: 60%;
+  background-color: white;
+  border-radius: 50%;
+  border-radius: 50% 50% 50% 50%;
+}
+
+.bulbBottom {
+  position: absolute;
+  left: 67.5px;
+  bottom: -70px;
+  height: 80px;
+  width: 90px;
+  background-color: white;
+}
+
+.on {
+  background-color: yellow;
+}
+
+.lightEffect {
+  box-shadow: 0 0 60px 10px yellow, 0 0 100px 10px orange, 0 0 140px 10px red;
+}
+
+.base {
+  height: 35%;
+  width: 90px;
+  align-self: center;
+  background-color: black;
+  border-radius: 0 0 8px 8px;
+}

@@ -30,4 +30,5 @@ export enum MessageType {
   GET_LOBBY = "GET_LOBBY",
   CREATE_LOBBY = "CREATE_LOBBY",
   JOIN_LOBBY = "JOIN_LOBBY",
+  LEAVE_LOBBY = "LEAVE_LOBBY",
 }

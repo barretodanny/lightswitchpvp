@@ -90,8 +90,14 @@ function handleWebSocketMessage(socket, message) {
 
       sendDataToClient(socket, GET_SELF, self);
 
-      // send lobbydetails to client
-      sendDataToClient(socket, GET_LOBBY, lobby);
+      // send lobbydetails to client and all other clients in this lobby
+      const usersConnectedToLobby = [];
+      lobby.connectedUsers.forEach((user) => {
+        const userSocket = getSocketByUser(user);
+        usersConnectedToLobby.push(userSocket);
+      });
+      usersConnectedToLobby.push(socket);
+      sendDataToClients(usersConnectedToLobby, GET_LOBBY, lobby);
 
       // send updated list of lobbies and connected users to all clients
       const newLobbiesList = getLobbies();
@@ -104,8 +110,19 @@ function handleWebSocketMessage(socket, message) {
       let self = getSelf(socket);
       const result = leaveLobby(self, self.lobby);
 
+      // non creator left, send remaining connected users updated lobby
+      if (result === 0) {
+        const lobby = getCurrentLobby(self);
+        const usersConnectedToLobby = [];
+        lobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, lobby);
+      }
       // if creator, send the rest of the players in to lobby to main lobby
-      if (result) {
+      else if (result.length > 0) {
         result.forEach((user) => {
           const userSocket = getSocketByUser(user);
           const updatedUser = updateUserLobby(userSocket, 0);
@@ -122,6 +139,7 @@ function handleWebSocketMessage(socket, message) {
       sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
       const connectedUsers = getConnectedUsers();
       sendDataToClients(clients, GET_CONNECTED_USERS, connectedUsers);
+      break;
     }
     case UPDATE_LOBBY_NAME: {
       const self = getSelf(socket);
@@ -133,6 +151,7 @@ function handleWebSocketMessage(socket, message) {
         const newLobbiesList = getLobbies();
         sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
       }
+      break;
     }
 
     default:
@@ -150,7 +169,18 @@ function handleWebSocketDisconnection(socket) {
     // (set back to 0, which is the main lobby)
     const result = leaveLobby(self, self.lobby);
 
-    if (result) {
+    // non creator left, send remaining connected users updated lobby
+    if (result === 0) {
+      const lobby = getCurrentLobby(self);
+      const usersConnectedToLobby = [];
+      lobby.connectedUsers.forEach((user) => {
+        const userSocket = getSocketByUser(user);
+        usersConnectedToLobby.push(userSocket);
+      });
+      usersConnectedToLobby.push(socket);
+      sendDataToClients(usersConnectedToLobby, GET_LOBBY, lobby);
+    } else if (result.length > 0) {
+      // creator left
       result.forEach((user) => {
         const userSocket = getSocketByUser(user);
         const updatedUser = updateUserLobby(userSocket, 0);

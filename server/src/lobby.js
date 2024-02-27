@@ -3,7 +3,7 @@
     lobbyId
     creatorId (userId)
     lobbyName
-    Users (list of usersockets)
+    Users (list of users)
     lobbyState
     user1Score
     user2Score

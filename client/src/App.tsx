@@ -76,6 +76,20 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleCreateLobby(e: React.FormEvent, lobbyName: string) {
+    e.preventDefault();
+
+    if (socket?.readyState === socket?.CLOSED) {
+      alert("Error connecting to server.");
+    }
+
+    const req = {
+      type: MessageType.CREATE_LOBBY,
+      payload: lobbyName,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -87,6 +101,7 @@ function App() {
           connectedUsers={connectedUsers}
           lobbies={lobbies}
           handleUpdateUsername={handleUpdateUsername}
+          handleCreateLobby={handleCreateLobby}
         />
       )}
     </>

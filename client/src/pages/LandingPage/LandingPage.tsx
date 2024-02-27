@@ -4,10 +4,10 @@ import Lightbulb from "../../components/Lightbulb/Lightbulb";
 import styles from "./LandingPage.module.css";
 
 interface LandingPageProps {
-  setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
+  connectToServer: () => void;
 }
 
-function LandingPage({ setCurrentPage }: LandingPageProps) {
+function LandingPage({ connectToServer }: LandingPageProps) {
   const [on, setOn] = useState(false);
 
   return (
@@ -16,7 +16,9 @@ function LandingPage({ setCurrentPage }: LandingPageProps) {
       <Lightbulb on={on} />
       <button
         className={styles.btn}
-        onClick={() => setCurrentPage("MAIN_LOBBY")}
+        onClick={() => {
+          connectToServer();
+        }}
       >
         Play
       </button>

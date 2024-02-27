@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Lobby, MessageType, Pages, User } from "./types/types";
+import { Lobby as LobbyType, MessageType, Pages, User } from "./types/types";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import MainLobby from "./pages/MainLobby/MainLobby";
+import Lobby from "./pages/Lobby/Lobby";
 
 import "./global.css";
 
@@ -9,7 +10,8 @@ function App() {
   const [socket, setSocket] = useState<WebSocket>();
   const [self, setSelf] = useState<User | undefined>();
   const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
-  const [lobbies, setLobbies] = useState<Lobby[]>([]);
+  const [lobbies, setLobbies] = useState<LobbyType[]>([]);
+  const [lobby, setLobby] = useState<LobbyType | undefined>();
   const [currentPage, setCurrentPage] = useState<Pages>(Pages.LANDING_PAGE);
 
   useEffect(() => {
@@ -56,6 +58,9 @@ function App() {
       } else if (data.messageType === MessageType.GET_LOBBIES) {
         const lobbies = data.data;
         setLobbies(lobbies);
+      } else if (data.messageType === MessageType.GET_LOBBY) {
+        const lobby = data.data;
+        setLobby(lobby);
       }
     };
 
@@ -113,6 +118,7 @@ function App() {
           handleJoinLobby={handleJoinLobby}
         />
       )}
+      {currentPage === Pages.LOBBY && <Lobby lobby={lobby} />}
     </>
   );
 }

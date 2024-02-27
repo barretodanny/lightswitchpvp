@@ -3,3 +3,7 @@ export interface User {
   username: string;
   lobby: string;
 }
+
+export enum MessageType {
+  UPDATE_USERNAME = "UPDATE_USERNAME",
+}

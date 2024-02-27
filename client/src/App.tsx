@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { User } from "./types/types";
+import { MessageType, User } from "./types/types";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import MainLobby from "./pages/MainLobby/MainLobby";
 
@@ -49,12 +49,24 @@ function App() {
     setSocket(socket);
   }
 
+  function handleUpdateUsername(e: React.FormEvent, newUsername: string) {
+    e.preventDefault();
+
+    const req = {
+      type: MessageType.UPDATE_USERNAME,
+      payload: newUsername,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === "LANDING_PAGE" && (
         <LandingPage connectToServer={connectToServer} />
       )}
-      {currentPage === "MAIN_LOBBY" && <MainLobby self={self} />}
+      {currentPage === "MAIN_LOBBY" && (
+        <MainLobby self={self} handleUpdateUsername={handleUpdateUsername} />
+      )}
     </>
   );
 }

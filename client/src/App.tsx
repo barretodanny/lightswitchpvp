@@ -90,6 +90,14 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleJoinLobby(lobbyId: string) {
+    const req = {
+      type: MessageType.JOIN_LOBBY,
+      payload: lobbyId,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -102,6 +110,7 @@ function App() {
           lobbies={lobbies}
           handleUpdateUsername={handleUpdateUsername}
           handleCreateLobby={handleCreateLobby}
+          handleJoinLobby={handleJoinLobby}
         />
       )}
     </>

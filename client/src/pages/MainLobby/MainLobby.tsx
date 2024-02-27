@@ -9,6 +9,7 @@ interface MainLobbyProps {
   lobbies: Lobby[];
   handleUpdateUsername(e: React.FormEvent, newUsername: string): void;
   handleCreateLobby(e: React.FormEvent, lobbyName: string): void;
+  handleJoinLobby(lobbyId: string): void;
 }
 
 function MainLobby({
@@ -17,6 +18,7 @@ function MainLobby({
   lobbies,
   handleUpdateUsername,
   handleCreateLobby,
+  handleJoinLobby,
 }: MainLobbyProps) {
   const [usernameField, setUsernameField] = useState(self?.username || "");
   const [lobbynameField, setLobbynameField] = useState("");
@@ -64,8 +66,15 @@ function MainLobby({
               return (
                 <div key={lobby.lobbyId}>
                   <span>
-                    {lobby.lobbyId} - {lobby.lobbyName}
+                    {lobby.lobbyId} - {lobby.lobbyName} -{" "}
+                    {lobby.connectedUsers.length} user(s)
                   </span>
+                  <button
+                    disabled={lobby.connectedUsers.length >= 4}
+                    onClick={() => handleJoinLobby(lobby.lobbyId)}
+                  >
+                    Join
+                  </button>
                 </div>
               );
             })}

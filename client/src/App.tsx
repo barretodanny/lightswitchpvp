@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MessageType, User } from "./types/types";
+import { Lobby, MessageType, Pages, User } from "./types/types";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import MainLobby from "./pages/MainLobby/MainLobby";
 
@@ -8,7 +8,9 @@ import "./global.css";
 function App() {
   const [socket, setSocket] = useState<WebSocket>();
   const [self, setSelf] = useState<User | undefined>();
-  const [currentPage, setCurrentPage] = useState("LANDING_PAGE");
+  const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
+  const [lobbies, setLobbies] = useState<Lobby[]>([]);
+  const [currentPage, setCurrentPage] = useState<Pages>(Pages.LANDING_PAGE);
 
   useEffect(() => {
     if (socket) {
@@ -16,9 +18,9 @@ function App() {
         alert("Error connecting to the server.");
       }, 3000);
 
-      if (socket?.readyState === 1) {
+      if (socket?.readyState === socket.OPEN) {
         clearTimeout(to);
-        setCurrentPage("MAIN_LOBBY");
+        setCurrentPage(Pages.MAIN_LOBBY);
       }
 
       return () => {
@@ -27,23 +29,34 @@ function App() {
     }
   }, [socket, socket?.readyState]);
 
+  useEffect(() => {
+    if (!self) {
+      return;
+    }
+
+    if (parseInt(self.lobby) === 0) {
+      setCurrentPage(Pages.MAIN_LOBBY);
+    } else {
+      setCurrentPage(Pages.LOBBY);
+    }
+  }, [self?.lobby]);
+
   function connectToServer() {
     const socket = new WebSocket("ws://localhost:3000");
 
     socket.onmessage = async (event) => {
       const data = JSON.parse(event.data);
 
-      if (data.messageType === "GET_SELF") {
+      if (data.messageType === MessageType.GET_SELF) {
         const self = data.data;
         setSelf(self);
+      } else if (data.messageType === MessageType.GET_CONNECTED_USERS) {
+        const connectedUsers = data.data;
+        setConnectedUsers(connectedUsers);
+      } else if (data.messageType === MessageType.GET_LOBBIES) {
+        const lobbies = data.data;
+        setLobbies(lobbies);
       }
-      // else if (data.messageType === "GET_CONNECTED_USERS") {
-      //   const connectedUsers = data.data;
-      //   setConnectedUsers(connectedUsers);
-      // } else if (data.messageType === "GET_LOBBIES") {
-      //   const lobbies = data.data;
-      //   setLobbies(lobbies);
-      // }
     };
 
     setSocket(socket);
@@ -51,6 +64,10 @@ function App() {
 
   function handleUpdateUsername(e: React.FormEvent, newUsername: string) {
     e.preventDefault();
+
+    if (socket?.readyState === socket?.CLOSED) {
+      alert("Error connecting to server.");
+    }
 
     const req = {
       type: MessageType.UPDATE_USERNAME,
@@ -61,11 +78,16 @@ function App() {
 
   return (
     <>
-      {currentPage === "LANDING_PAGE" && (
+      {currentPage === Pages.LANDING_PAGE && (
         <LandingPage connectToServer={connectToServer} />
       )}
-      {currentPage === "MAIN_LOBBY" && (
-        <MainLobby self={self} handleUpdateUsername={handleUpdateUsername} />
+      {currentPage === Pages.MAIN_LOBBY && (
+        <MainLobby
+          self={self}
+          connectedUsers={connectedUsers}
+          lobbies={lobbies}
+          handleUpdateUsername={handleUpdateUsername}
+        />
       )}
     </>
   );

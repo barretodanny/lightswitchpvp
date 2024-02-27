@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { User } from "../../types/types";
+import { Lobby, User } from "../../types/types";
 
 import styles from "./MainLobby.module.css";
 
 interface MainLobbyProps {
   self: User | undefined;
+  connectedUsers: User[];
+  lobbies: Lobby[];
   handleUpdateUsername(e: React.FormEvent, newUsername: string): void;
 }
 
-function MainLobby({ self, handleUpdateUsername }: MainLobbyProps) {
+function MainLobby({
+  self,
+  connectedUsers,
+  lobbies,
+  handleUpdateUsername,
+}: MainLobbyProps) {
   const [usernameField, setUsernameField] = useState(self?.username || "");
 
   return (
@@ -29,6 +36,36 @@ function MainLobby({ self, handleUpdateUsername }: MainLobbyProps) {
           />
           <button>Update</button>
         </form>
+      </div>
+      <div style={{ display: "flex", gap: 15 }}>
+        <div>
+          <p>Online Users</p>
+          <div>
+            {connectedUsers.map((user) => {
+              return (
+                <div>
+                  <span>
+                    {user.userId} - {user.username}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div>
+          <p>Open Lobbies</p>
+          <div>
+            {lobbies.map((lobby) => {
+              return (
+                <div>
+                  <span>
+                    {lobby.lobbyId} - {lobby.lobbyName}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

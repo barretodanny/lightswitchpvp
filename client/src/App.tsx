@@ -121,6 +121,28 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleUpdateLobbyGameTimer(
+    e: React.FormEvent,
+    newGameTimer: string
+  ) {
+    e.preventDefault();
+
+    const req = {
+      type: MessageType.UPDATE_LOBBY_GAME_TIMER,
+      payload: newGameTimer,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
+  function handleLobbyRandomizeSwitchToggle(e: React.FormEvent) {
+    e.preventDefault();
+
+    const req = {
+      type: MessageType.TOGGLE_LOBBY_RANDOMIZE_SWITCH,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -142,6 +164,8 @@ function App() {
           lobby={lobby}
           handleLeaveLobby={handleLeaveLobby}
           handleUpdateLobbyName={handleUpdateLobbyName}
+          handleUpdateLobbyGameTimer={handleUpdateLobbyGameTimer}
+          handleLobbyRandomizeSwitchToggle={handleLobbyRandomizeSwitchToggle}
         />
       )}
     </>

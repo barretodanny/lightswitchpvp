@@ -4,6 +4,10 @@
     creatorId (userId)
     lobbyName
     Users (list of users)
+    settings {
+      gameTimer
+      randomizeSwitch
+    }
     lobbyState
     user1Score
     user2Score
@@ -66,6 +70,10 @@ function createLobby(self, lobbyName) {
     creatorId: self.userId,
     lobbyName,
     connectedUsers: [self],
+    settings: {
+      gameTimer: 60,
+      randomizeSwitch: false,
+    },
     lobbyState: "SETUP",
     user1Score: 0,
     user2Score: 0,
@@ -87,6 +95,47 @@ function updateLobbyName(self, lobbyId, newLobbyName) {
   const updatedLobby = {
     ...lobby,
     lobbyName: newLobbyName,
+  };
+
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
+function updateLobbyGameTimer(self, lobbyId, newTimer) {
+  const lobby = lobbies.get(lobbyId);
+
+  if (self.userId !== lobby.creatorId) {
+    return;
+  }
+
+  const updatedLobbySettings = {
+    ...lobby.settings,
+    gameTimer: newTimer,
+  };
+  const updatedLobby = {
+    ...lobby,
+    settings: updatedLobbySettings,
+  };
+
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
+function toggleLobbyRandomizeSwitch(self, lobbyId) {
+  const lobby = lobbies.get(lobbyId);
+  const prevRandomizeSwitch = lobby.settings.randomizeSwitch;
+
+  if (self.userId !== lobby.creatorId) {
+    return;
+  }
+
+  const updatedLobbySettings = {
+    ...lobby.settings,
+    randomizeSwitch: !prevRandomizeSwitch,
+  };
+  const updatedLobby = {
+    ...lobby,
+    settings: updatedLobbySettings,
   };
 
   lobbies.set(lobbyId, updatedLobby);
@@ -118,6 +167,8 @@ module.exports = {
   leaveLobby,
   createLobby,
   updateLobbyName,
+  updateLobbyGameTimer,
+  toggleLobbyRandomizeSwitch,
   deleteLobby,
   printLobbies,
 };

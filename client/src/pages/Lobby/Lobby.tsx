@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lobby as LobbyType, User } from "../../types/types";
+import { LobbyPlayer, Lobby as LobbyType, User } from "../../types/types";
 
 interface LobbyProps {
   self: User | undefined;
@@ -8,6 +8,7 @@ interface LobbyProps {
   handleUpdateLobbyName(e: React.FormEvent, newLobbyname: string): void;
   handleUpdateLobbyGameTimer(e: React.FormEvent, newGameTimer: string): void;
   handleLobbyRandomizeSwitchToggle(e: React.FormEvent): void;
+  handleToggleLobbyUserReadyStatus(e: React.FormEvent, index: string): void;
 }
 
 function Lobby({
@@ -17,12 +18,15 @@ function Lobby({
   handleUpdateLobbyName,
   handleUpdateLobbyGameTimer,
   handleLobbyRandomizeSwitchToggle,
+  handleToggleLobbyUserReadyStatus,
 }: LobbyProps) {
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
 
   if (!lobby || !self) {
     return;
   }
+
+  console.log(lobby);
 
   return (
     <div>
@@ -74,11 +78,27 @@ function Lobby({
       <p>Connected users:</p>
       <div>
         {/* @ts-ignore */}
-        {lobby.connectedUsers.map((user: User) => {
+        {lobby.connectedUsers.map((user: LobbyPlayer, index) => {
           return (
             <div key={user.userId}>
               <span>
-                {user.userId} - {user.username}
+                {user.userId} - {user.username} ---{" "}
+                {lobby.creatorId === user.userId ? (
+                  "(HOST)"
+                ) : (
+                  <>
+                    <span>{user.readyStatus ? "READY" : "NOT READY"}</span>
+                    {self.userId === user.userId && (
+                      <button
+                        onClick={(e) =>
+                          handleToggleLobbyUserReadyStatus(e, index.toString())
+                        }
+                      >
+                        {!user.readyStatus ? "READY" : "UNREADY"}
+                      </button>
+                    )}
+                  </>
+                )}
               </span>
             </div>
           );

@@ -37,7 +37,7 @@ function getCurrentLobby(self) {
 
 function joinLobby(self, lobbyId) {
   const lobby = lobbies.get(lobbyId);
-  lobby.connectedUsers.push(self);
+  lobby.connectedUsers.push({ ...self, readyStatus: false });
   return lobby;
 }
 
@@ -69,7 +69,7 @@ function createLobby(self, lobbyName) {
     lobbyId,
     creatorId: self.userId,
     lobbyName,
-    connectedUsers: [self],
+    connectedUsers: [{ ...self, readyStatus: true }],
     settings: {
       gameTimer: 60,
       randomizeSwitch: false,
@@ -142,6 +142,32 @@ function toggleLobbyRandomizeSwitch(self, lobbyId) {
   return updatedLobby;
 }
 
+function toggleLobbyPlayerReadyStatus(self, lobbyId, index) {
+  const lobby = lobbies.get(lobbyId);
+
+  let updatedPlayer = lobby.connectedUsers[index];
+  const prevReadyStatus = updatedPlayer.readyStatus;
+
+  if (self.userId !== updatedPlayer.userId) {
+    return;
+  }
+
+  updatedPlayer = {
+    ...updatedPlayer,
+    readyStatus: !prevReadyStatus,
+  };
+
+  const updatedPlayers = [...lobby.connectedUsers];
+  updatedPlayers[index] = updatedPlayer;
+
+  const updatedLobby = {
+    ...lobby,
+    connectedUsers: updatedPlayers,
+  };
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
 function deleteLobby(lobbyId) {
   lobbies.delete(lobbyId);
 }
@@ -169,6 +195,7 @@ module.exports = {
   updateLobbyName,
   updateLobbyGameTimer,
   toggleLobbyRandomizeSwitch,
+  toggleLobbyPlayerReadyStatus,
   deleteLobby,
   printLobbies,
 };

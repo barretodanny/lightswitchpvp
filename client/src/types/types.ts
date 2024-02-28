@@ -4,6 +4,13 @@ export interface User {
   lobby: string;
 }
 
+export interface LobbyPlayer {
+  userId: string;
+  username: string;
+  lobby: string;
+  readyStatus: string;
+}
+
 interface LobbySettings {
   gameTimer: string;
   randomizeSwitch: string;
@@ -40,4 +47,5 @@ export enum MessageType {
   UPDATE_LOBBY_NAME = "UPDATE_LOBBY_NAME",
   UPDATE_LOBBY_GAME_TIMER = "UPDATE_LOBBY_GAME_TIMER",
   TOGGLE_LOBBY_RANDOMIZE_SWITCH = "TOGGLE_LOBBY_RANDOMIZE_SWITCH",
+  TOGGLE_LOBBY_PLAYER_READY_STATUS = "TOGGLE_LOBBY_PLAYER_READY_STATUS",
 }

@@ -17,6 +17,7 @@ const {
   deleteLobby,
   updateLobbyGameTimer,
   toggleLobbyRandomizeSwitch,
+  toggleLobbyPlayerReadyStatus,
 } = require("./lobby");
 const {
   GET_SELF,
@@ -30,6 +31,7 @@ const {
   UPDATE_LOBBY_NAME,
   UPDATE_LOBBY_GAME_TIMER,
   TOGGLE_LOBBY_RANDOMIZE_SWITCH,
+  TOGGLE_LOBBY_PLAYER_READY_STATUS,
 } = require("./messageTypes");
 
 let clients = [];
@@ -181,6 +183,25 @@ function handleWebSocketMessage(socket, message) {
     case TOGGLE_LOBBY_RANDOMIZE_SWITCH: {
       const self = getSelf(socket);
       const updatedLobby = toggleLobbyRandomizeSwitch(self, self.lobby);
+
+      if (updatedLobby) {
+        const usersConnectedToLobby = [];
+        updatedLobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+      }
+      break;
+    }
+    case TOGGLE_LOBBY_PLAYER_READY_STATUS: {
+      const self = getSelf(socket);
+      const updatedLobby = toggleLobbyPlayerReadyStatus(
+        self,
+        self.lobby,
+        req.payload
+      );
 
       if (updatedLobby) {
         const usersConnectedToLobby = [];

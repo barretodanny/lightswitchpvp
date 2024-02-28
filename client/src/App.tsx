@@ -143,6 +143,16 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleToggleLobbyUserReadyStatus(e: React.FormEvent, index: string) {
+    e.preventDefault();
+
+    const req = {
+      type: MessageType.TOGGLE_LOBBY_PLAYER_READY_STATUS,
+      payload: index,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -166,6 +176,7 @@ function App() {
           handleUpdateLobbyName={handleUpdateLobbyName}
           handleUpdateLobbyGameTimer={handleUpdateLobbyGameTimer}
           handleLobbyRandomizeSwitchToggle={handleLobbyRandomizeSwitchToggle}
+          handleToggleLobbyUserReadyStatus={handleToggleLobbyUserReadyStatus}
         />
       )}
     </>

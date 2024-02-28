@@ -111,6 +111,16 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleUpdateLobbyName(e: React.FormEvent, newLobbyname: string) {
+    e.preventDefault();
+
+    const req = {
+      type: MessageType.UPDATE_LOBBY_NAME,
+      payload: newLobbyname,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -127,7 +137,12 @@ function App() {
         />
       )}
       {currentPage === Pages.LOBBY && (
-        <Lobby lobby={lobby} handleLeaveLobby={handleLeaveLobby} />
+        <Lobby
+          self={self}
+          lobby={lobby}
+          handleLeaveLobby={handleLeaveLobby}
+          handleUpdateLobbyName={handleUpdateLobbyName}
+        />
       )}
     </>
   );

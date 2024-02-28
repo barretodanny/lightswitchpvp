@@ -150,7 +150,13 @@ function handleWebSocketMessage(socket, message) {
       const updatedLobby = updateLobbyName(self, self.lobby, req.payload);
 
       if (updatedLobby) {
-        sendDataToClient(socket, GET_LOBBY, updatedLobby);
+        const usersConnectedToLobby = [];
+        updatedLobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
 
         const newLobbiesList = getLobbies();
         sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
@@ -162,7 +168,13 @@ function handleWebSocketMessage(socket, message) {
       const updatedLobby = updateLobbyGameTimer(self, self.lobby, req.payload);
 
       if (updatedLobby) {
-        sendDataToClient(socket, GET_LOBBY, updatedLobby);
+        const usersConnectedToLobby = [];
+        updatedLobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
       }
       break;
     }
@@ -171,7 +183,13 @@ function handleWebSocketMessage(socket, message) {
       const updatedLobby = toggleLobbyRandomizeSwitch(self, self.lobby);
 
       if (updatedLobby) {
-        sendDataToClient(socket, GET_LOBBY, updatedLobby);
+        const usersConnectedToLobby = [];
+        updatedLobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
       }
       break;
     }

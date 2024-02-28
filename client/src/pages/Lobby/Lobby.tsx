@@ -41,32 +41,36 @@ function Lobby({
               <button>Update lobby name</button>
             </form>
           </div>
-          <div>
-            <p>settings</p>
-            <p>game timer:{lobby.settings.gameTimer}</p>
-            <div>
-              <button onClick={(e) => handleUpdateLobbyGameTimer(e, "30")}>
-                30
-              </button>
-              <button onClick={(e) => handleUpdateLobbyGameTimer(e, "60")}>
-                60
-              </button>
-              <button onClick={(e) => handleUpdateLobbyGameTimer(e, "120")}>
-                120
-              </button>
-              <button onClick={(e) => handleUpdateLobbyGameTimer(e, "300")}>
-                300
-              </button>
-            </div>
-            <p>
-              randomize switch: {lobby.settings.randomizeSwitch ? "on" : "off"}
-              <button onClick={(e) => handleLobbyRandomizeSwitchToggle(e)}>
-                Turn {!lobby.settings.randomizeSwitch ? "on" : "off"}
-              </button>
-            </p>
-          </div>
         </div>
       )}
+      <div>
+        <p>settings</p>
+        <p>game timer:{lobby.settings.gameTimer}</p>
+        {self.userId === lobby.creatorId && (
+          <div>
+            <button onClick={(e) => handleUpdateLobbyGameTimer(e, "30")}>
+              30
+            </button>
+            <button onClick={(e) => handleUpdateLobbyGameTimer(e, "60")}>
+              60
+            </button>
+            <button onClick={(e) => handleUpdateLobbyGameTimer(e, "120")}>
+              120
+            </button>
+            <button onClick={(e) => handleUpdateLobbyGameTimer(e, "300")}>
+              300
+            </button>
+          </div>
+        )}
+        <p>
+          randomize switch: {lobby.settings.randomizeSwitch ? "on" : "off"}
+          {self.userId === lobby.creatorId && (
+            <button onClick={(e) => handleLobbyRandomizeSwitchToggle(e)}>
+              Turn {!lobby.settings.randomizeSwitch ? "on" : "off"}
+            </button>
+          )}
+        </p>
+      </div>
       <p>Connected users:</p>
       <div>
         {/* @ts-ignore */}

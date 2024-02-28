@@ -26,7 +26,13 @@ function Lobby({
     return;
   }
 
-  console.log(lobby);
+  // check if all players in lobby are ready to determine if the host can start the match
+  const readyUsers = lobby.connectedUsers.filter(
+    (user: any) => user.readyStatus === true
+  );
+  const canStart =
+    lobby.connectedUsers.length > 1 &&
+    lobby.connectedUsers.length === readyUsers.length;
 
   return (
     <div>
@@ -84,7 +90,13 @@ function Lobby({
               <span>
                 {user.userId} - {user.username} ---{" "}
                 {lobby.creatorId === user.userId ? (
-                  "(HOST)"
+                  <>
+                    <span>(HOST)</span>
+
+                    {self.userId === user.userId && canStart && (
+                      <button>Start</button>
+                    )}
+                  </>
                 ) : (
                   <>
                     <span>{user.readyStatus ? "READY" : "NOT READY"}</span>

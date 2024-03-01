@@ -20,6 +20,8 @@
     value: lobby
 */
 
+const MAXIMUM_LOBBY_SIZE = 4;
+
 lobbies = new Map();
 let nextLobbyId = 1;
 
@@ -59,6 +61,11 @@ function findFirstAvailableColor(lobby) {
 
 function joinLobby(self, lobbyId) {
   const lobby = lobbies.get(lobbyId);
+
+  if (lobby.connectedUsers.length >= MAXIMUM_LOBBY_SIZE) {
+    return;
+  }
+
   lobby.connectedUsers.push({
     ...self,
     readyStatus: false,

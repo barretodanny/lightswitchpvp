@@ -67,7 +67,7 @@ function MainLobby({
                 <div key={lobby.lobbyId}>
                   <span>
                     {lobby.lobbyId} - {lobby.lobbyName} -{" "}
-                    {lobby.connectedUsers.length} user(s)
+                    {lobby.connectedUsers.length}/4 user(s)
                   </span>
                   <button
                     disabled={lobby.connectedUsers.length >= 4}

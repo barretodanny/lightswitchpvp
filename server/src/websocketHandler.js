@@ -94,6 +94,12 @@ function handleWebSocketMessage(socket, message) {
     case JOIN_LOBBY: {
       let self = getSelf(socket);
       let lobby = joinLobby(self, req.payload);
+
+      // failed to join lobby because it is full
+      if (!lobby) {
+        return;
+      }
+
       self = updateUserLobby(socket, lobby.lobbyId);
 
       sendDataToClient(socket, GET_SELF, self);

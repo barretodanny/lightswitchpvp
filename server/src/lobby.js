@@ -35,9 +35,35 @@ function getCurrentLobby(self) {
   return lobbies.get(self.lobby);
 }
 
+function getTakenColors(lobby) {
+  const connectedUsers = lobby.connectedUsers;
+  const takenColors = [];
+
+  for (let index = 0; index < connectedUsers.length; index++) {
+    const user = connectedUsers[index];
+    takenColors.push(user.color);
+  }
+
+  return takenColors;
+}
+
+function findFirstAvailableColor(lobby) {
+  const takenColors = getTakenColors(lobby);
+
+  let color = 0;
+  while (takenColors.includes(color)) {
+    color++;
+  }
+  return color;
+}
+
 function joinLobby(self, lobbyId) {
   const lobby = lobbies.get(lobbyId);
-  lobby.connectedUsers.push({ ...self, readyStatus: false });
+  lobby.connectedUsers.push({
+    ...self,
+    readyStatus: false,
+    color: findFirstAvailableColor(lobby),
+  });
   return lobby;
 }
 
@@ -69,7 +95,7 @@ function createLobby(self, lobbyName) {
     lobbyId,
     creatorId: self.userId,
     lobbyName,
-    connectedUsers: [{ ...self, readyStatus: true }],
+    connectedUsers: [{ ...self, readyStatus: true, color: 0 }],
     settings: {
       gameTimer: 60,
       randomizeSwitch: false,
@@ -168,6 +194,36 @@ function toggleLobbyPlayerReadyStatus(self, lobbyId, index) {
   return updatedLobby;
 }
 
+function updateLobbyPlayerColorChoice(self, lobbyId, index, newColor) {
+  const lobby = lobbies.get(lobbyId);
+  const takenColors = getTakenColors(lobby);
+
+  if (takenColors.includes(newColor)) {
+    return;
+  }
+
+  let updatedPlayer = lobby.connectedUsers[index];
+
+  if (self.userId !== updatedPlayer.userId) {
+    return;
+  }
+
+  updatedPlayer = {
+    ...updatedPlayer,
+    color: newColor,
+  };
+
+  const updatedPlayers = [...lobby.connectedUsers];
+  updatedPlayers[index] = updatedPlayer;
+
+  const updatedLobby = {
+    ...lobby,
+    connectedUsers: updatedPlayers,
+  };
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
 function deleteLobby(lobbyId) {
   lobbies.delete(lobbyId);
 }
@@ -196,6 +252,7 @@ module.exports = {
   updateLobbyGameTimer,
   toggleLobbyRandomizeSwitch,
   toggleLobbyPlayerReadyStatus,
+  updateLobbyPlayerColorChoice,
   deleteLobby,
   printLobbies,
 };

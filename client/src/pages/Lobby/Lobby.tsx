@@ -9,6 +9,11 @@ interface LobbyProps {
   handleUpdateLobbyGameTimer(e: React.FormEvent, newGameTimer: string): void;
   handleLobbyRandomizeSwitchToggle(e: React.FormEvent): void;
   handleToggleLobbyUserReadyStatus(e: React.FormEvent, index: string): void;
+  handleUpdateLobbyUserColorChoice(
+    e: React.FormEvent,
+    index: string,
+    color: string
+  ): void;
 }
 
 function Lobby({
@@ -19,6 +24,7 @@ function Lobby({
   handleUpdateLobbyGameTimer,
   handleLobbyRandomizeSwitchToggle,
   handleToggleLobbyUserReadyStatus,
+  handleUpdateLobbyUserColorChoice,
 }: LobbyProps) {
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
 
@@ -33,6 +39,38 @@ function Lobby({
   const canStart =
     lobby.connectedUsers.length > 1 &&
     lobby.connectedUsers.length === readyUsers.length;
+
+  const takenColors: number[] = [];
+  for (let i = 0; i < lobby.connectedUsers.length; i++) {
+    // @ts-ignore
+    const player: LobbyPlayer = lobby.connectedUsers[i];
+    // @ts-ignore
+    takenColors.push(player.color);
+  }
+  console.log(takenColors);
+
+  function getColorString(color: string) {
+    const colorVal = parseInt(color);
+
+    switch (colorVal) {
+      case 0:
+        return "Red";
+      case 1:
+        return "Yellow";
+      case 2:
+        return "Blue";
+      case 3:
+        return "Green";
+      case 4:
+        return "Orange";
+      case 5:
+        return "Purple";
+      case 6:
+        return "White";
+      default:
+        break;
+    }
+  }
 
   return (
     <div>
@@ -111,7 +149,69 @@ function Lobby({
                     )}
                   </>
                 )}
+                --- {getColorString(user.color)}
               </span>
+              {self.userId === user.userId && (
+                <div>
+                  <p>Choose a color:</p>
+                  <button
+                    disabled={takenColors.includes(0)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "0")
+                    }
+                  >
+                    Red
+                  </button>
+                  <button
+                    disabled={takenColors.includes(1)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "1")
+                    }
+                  >
+                    Yellow
+                  </button>
+                  <button
+                    disabled={takenColors.includes(2)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "2")
+                    }
+                  >
+                    Blue
+                  </button>
+                  <button
+                    disabled={takenColors.includes(3)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "3")
+                    }
+                  >
+                    Green
+                  </button>
+                  <button
+                    disabled={takenColors.includes(4)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "4")
+                    }
+                  >
+                    Orange
+                  </button>
+                  <button
+                    disabled={takenColors.includes(5)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "5")
+                    }
+                  >
+                    Purple
+                  </button>
+                  <button
+                    disabled={takenColors.includes(6)}
+                    onClick={(e) =>
+                      handleUpdateLobbyUserColorChoice(e, index.toString(), "6")
+                    }
+                  >
+                    White
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}

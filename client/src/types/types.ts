@@ -9,6 +9,7 @@ export interface LobbyPlayer {
   username: string;
   lobby: string;
   readyStatus: string;
+  color: string;
 }
 
 interface LobbySettings {
@@ -48,4 +49,5 @@ export enum MessageType {
   UPDATE_LOBBY_GAME_TIMER = "UPDATE_LOBBY_GAME_TIMER",
   TOGGLE_LOBBY_RANDOMIZE_SWITCH = "TOGGLE_LOBBY_RANDOMIZE_SWITCH",
   TOGGLE_LOBBY_PLAYER_READY_STATUS = "TOGGLE_LOBBY_PLAYER_READY_STATUS",
+  UPDATE_LOBBY_PLAYER_COLOR_CHOICE = "UPDATE_LOBBY_PLAYER_COLOR_CHOICE",
 }

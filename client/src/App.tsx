@@ -153,6 +153,24 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleUpdateLobbyUserColorChoice(
+    e: React.FormEvent,
+    index: string,
+    newColor: string
+  ) {
+    e.preventDefault();
+
+    const payload = {
+      index,
+      newColor,
+    };
+    const req = {
+      type: MessageType.UPDATE_LOBBY_PLAYER_COLOR_CHOICE,
+      payload,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -177,6 +195,7 @@ function App() {
           handleUpdateLobbyGameTimer={handleUpdateLobbyGameTimer}
           handleLobbyRandomizeSwitchToggle={handleLobbyRandomizeSwitchToggle}
           handleToggleLobbyUserReadyStatus={handleToggleLobbyUserReadyStatus}
+          handleUpdateLobbyUserColorChoice={handleUpdateLobbyUserColorChoice}
         />
       )}
     </>

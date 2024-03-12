@@ -19,6 +19,7 @@ const {
   toggleLobbyRandomizeSwitch,
   toggleLobbyPlayerReadyStatus,
   updateLobbyPlayerColorChoice,
+  startLobbyCountdown,
   startLobbyGame,
 } = require("./lobby");
 const {
@@ -248,7 +249,7 @@ function handleWebSocketMessage(socket, message) {
     }
     case LOBBY_START_GAME: {
       const self = getSelf(socket);
-      const updatedLobby = startLobbyGame(self, self.lobby);
+      let updatedLobby = startLobbyCountdown(self, self.lobby);
 
       if (updatedLobby) {
         const usersConnectedToLobby = [];
@@ -258,6 +259,12 @@ function handleWebSocketMessage(socket, message) {
         });
         usersConnectedToLobby.push(socket);
         sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+
+        // Game starts after 3 second countdown
+        setTimeout(() => {
+          updatedLobby = startLobbyGame(self, self.lobby);
+          sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+        }, 3000);
       }
 
       break;

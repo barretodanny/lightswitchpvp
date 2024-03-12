@@ -6,6 +6,7 @@ import {
   User,
 } from "../../types/types";
 import LobbyCountdown from "../LobbyCountdown/LobbyCountdown";
+import Game from "../Game/Game";
 
 interface LobbyProps {
   self: User | undefined;
@@ -42,6 +43,10 @@ function Lobby({
 
   if (lobby.lobbyState === LobbyStates.COUNTDOWN) {
     return <LobbyCountdown />;
+  }
+
+  if (lobby.lobbyState === LobbyStates.GAME) {
+    return <Game />;
   }
 
   // check if all players in lobby are ready to determine if the host can start the match

@@ -20,6 +20,8 @@
     value: lobby
 */
 
+const { SETUP, COUNTDOWN } = require("./lobbyStates");
+
 const MAXIMUM_LOBBY_SIZE = 4;
 
 lobbies = new Map();
@@ -107,7 +109,7 @@ function createLobby(self, lobbyName) {
       gameTimer: 60,
       randomizeSwitch: false,
     },
-    lobbyState: "SETUP",
+    lobbyState: SETUP,
     user1Score: 0,
     user2Score: 0,
     lightState: undefined,
@@ -128,6 +130,22 @@ function updateLobbyName(self, lobbyId, newLobbyName) {
   const updatedLobby = {
     ...lobby,
     lobbyName: newLobbyName,
+  };
+
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
+function startLobbyGame(self, lobbyId) {
+  const lobby = lobbies.get(lobbyId);
+
+  if (self.userId !== lobby.creatorId) {
+    return;
+  }
+
+  const updatedLobby = {
+    ...lobby,
+    lobbyState: COUNTDOWN,
   };
 
   lobbies.set(lobbyId, updatedLobby);
@@ -261,5 +279,6 @@ module.exports = {
   toggleLobbyPlayerReadyStatus,
   updateLobbyPlayerColorChoice,
   deleteLobby,
+  startLobbyGame,
   printLobbies,
 };

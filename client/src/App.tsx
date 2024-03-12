@@ -171,6 +171,13 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handleStartMatch() {
+    const req = {
+      type: MessageType.LOBBY_START_GAME,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -196,6 +203,7 @@ function App() {
           handleLobbyRandomizeSwitchToggle={handleLobbyRandomizeSwitchToggle}
           handleToggleLobbyUserReadyStatus={handleToggleLobbyUserReadyStatus}
           handleUpdateLobbyUserColorChoice={handleUpdateLobbyUserColorChoice}
+          handleStartMatch={handleStartMatch}
         />
       )}
     </>

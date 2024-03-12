@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { LobbyPlayer, Lobby as LobbyType, User } from "../../types/types";
+import {
+  LobbyPlayer,
+  LobbyStates,
+  Lobby as LobbyType,
+  User,
+} from "../../types/types";
+import LobbyCountdown from "../LobbyCountdown/LobbyCountdown";
 
 interface LobbyProps {
   self: User | undefined;
@@ -14,6 +20,7 @@ interface LobbyProps {
     index: string,
     color: string
   ): void;
+  handleStartMatch(): void;
 }
 
 function Lobby({
@@ -25,11 +32,16 @@ function Lobby({
   handleLobbyRandomizeSwitchToggle,
   handleToggleLobbyUserReadyStatus,
   handleUpdateLobbyUserColorChoice,
+  handleStartMatch,
 }: LobbyProps) {
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
 
   if (!lobby || !self) {
     return;
+  }
+
+  if (lobby.lobbyState === LobbyStates.COUNTDOWN) {
+    return <LobbyCountdown />;
   }
 
   // check if all players in lobby are ready to determine if the host can start the match
@@ -132,7 +144,7 @@ function Lobby({
                     <span>(HOST)</span>
 
                     {self.userId === user.userId && canStart && (
-                      <button>Start</button>
+                      <button onClick={handleStartMatch}>Start</button>
                     )}
                   </>
                 ) : (

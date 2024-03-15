@@ -9,10 +9,8 @@
       randomizeSwitch
     }
     lobbyState
-    user1Score
-    user2Score
-    lightState
     gameTimer
+    scoringTime
 
   
   Lobbies
@@ -20,7 +18,7 @@
     value: lobby
 */
 
-const { SETUP, COUNTDOWN, GAME } = require("./lobbyStates");
+const { SETUP, COUNTDOWN, GAME, POST_GAME } = require("./lobbyStates");
 
 const MAXIMUM_LOBBY_SIZE = 4;
 
@@ -76,6 +74,7 @@ function joinLobby(self, lobbyId) {
     ...self,
     readyStatus: false,
     color: findFirstAvailableColor(lobby),
+    score: 0,
   });
   return lobby;
 }
@@ -108,16 +107,15 @@ function createLobby(self, lobbyName) {
     lobbyId,
     creatorId: self.userId,
     lobbyName,
-    connectedUsers: [{ ...self, readyStatus: true, color: 0 }],
+    connectedUsers: [{ ...self, readyStatus: true, color: 0, score: 0 }],
     settings: {
       gameTimer: 60,
       randomizeSwitch: false,
     },
     lobbyState: SETUP,
-    user1Score: 0,
-    user2Score: 0,
-    lightState: undefined,
     gameTimer: -1,
+    currentColor: -1,
+    scoringTime: 0,
   };
 
   lobbies.set(lobbyId, newLobby);
@@ -166,6 +164,44 @@ function startLobbyGame(self, lobbyId) {
   const updatedLobby = {
     ...lobby,
     lobbyState: GAME,
+    gameTimer: lobby.settings.gameTimer,
+    currentColor: -1,
+    scoringTime: 0,
+  };
+
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
+function endLobbygame(lobbyId) {
+  const lobby = lobbies.get(lobbyId);
+
+  // update score for user whos currently scoring
+  const now = Date.now();
+  let scoringUser = undefined;
+  let i;
+
+  for (i = 0; i < lobby.connectedUsers.length; i++) {
+    if (lobby.connectedUsers[i].color === lobby.currentColor) {
+      scoringUser = lobby.connectedUsers[i];
+      break;
+    }
+  }
+
+  let updatedLobby = { ...lobby };
+
+  if (scoringUser) {
+    const score = now - lobby.scoringTime;
+    scoringUser.score += score;
+
+    const updatedConnectedUsers = [...updatedLobby.connectedUsers];
+    updatedConnectedUsers[i] = scoringUser;
+    updatedLobby = { ...updatedLobby, connectedUsers: updatedConnectedUsers };
+  }
+
+  updatedLobby = {
+    ...lobby,
+    lobbyState: POST_GAME,
   };
 
   lobbies.set(lobbyId, updatedLobby);
@@ -269,6 +305,89 @@ function updateLobbyPlayerColorChoice(self, lobbyId, index, newColor) {
   return updatedLobby;
 }
 
+function updateLobbyGameColor(self, lobbyId, index) {
+  const lobby = lobbies.get(lobbyId);
+  const user = lobby.connectedUsers[index];
+  const now = Date.now();
+  let scoringUser = undefined;
+  let i;
+
+  if (self.userId !== user.userId) {
+    return;
+  }
+
+  for (i = 0; i < lobby.connectedUsers.length; i++) {
+    if (lobby.connectedUsers[i].color === lobby.currentColor) {
+      scoringUser = lobby.connectedUsers[i];
+      break;
+    }
+  }
+
+  let updatedLobby = { ...lobby };
+
+  if (scoringUser) {
+    const score = now - lobby.scoringTime;
+
+    scoringUser.score += score;
+
+    const updatedConnectedUsers = [...updatedLobby.connectedUsers];
+    updatedConnectedUsers[i] = scoringUser;
+
+    updatedLobby = { ...updatedLobby, connectedUsers: updatedConnectedUsers };
+  }
+
+  const newLobbyColor = user.color === lobby.currentColor ? -1 : user.color;
+  updatedLobby = {
+    ...updatedLobby,
+    currentColor: newLobbyColor,
+    scoringTime: newLobbyColor === -1 ? 0 : now,
+  };
+
+  // const updatedLobby = {
+  //   ...lobby,
+  //   currentColor: user.color,
+  // };
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
+function decrementLobbyGameTimer(lobbyId) {
+  const lobby = lobbies.get(lobbyId);
+  const newTime = lobby.gameTimer - 1;
+  const now = Date.now();
+  let scoringUser = undefined;
+  let i;
+
+  for (i = 0; i < lobby.connectedUsers.length; i++) {
+    if (lobby.connectedUsers[i].color === lobby.currentColor) {
+      scoringUser = lobby.connectedUsers[i];
+      break;
+    }
+  }
+
+  let updatedLobby = { ...lobby };
+
+  if (scoringUser) {
+    const score = now - lobby.scoringTime;
+    scoringUser.score += score;
+
+    const updatedConnectedUsers = [...updatedLobby.connectedUsers];
+    updatedConnectedUsers[i] = scoringUser;
+    updatedLobby = {
+      ...updatedLobby,
+      connectedUsers: updatedConnectedUsers,
+      scoringTime: now,
+    };
+  }
+
+  updatedLobby = {
+    ...updatedLobby,
+    gameTimer: newTime,
+  };
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
 function deleteLobby(lobbyId) {
   lobbies.delete(lobbyId);
 }
@@ -301,5 +420,8 @@ module.exports = {
   deleteLobby,
   startLobbyCountdown,
   startLobbyGame,
+  endLobbygame,
   printLobbies,
+  updateLobbyGameColor,
+  decrementLobbyGameTimer,
 };

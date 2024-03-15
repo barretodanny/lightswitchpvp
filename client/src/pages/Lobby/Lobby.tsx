@@ -7,6 +7,8 @@ import {
 } from "../../types/types";
 import LobbyCountdown from "../LobbyCountdown/LobbyCountdown";
 import Game from "../Game/Game";
+import { getColorString } from "../../utils/utils";
+import LobbyPostGame from "../LobbyPostGame/LobbyPostGame";
 
 interface LobbyProps {
   self: User | undefined;
@@ -22,6 +24,7 @@ interface LobbyProps {
     color: string
   ): void;
   handleStartMatch(): void;
+  toggleLightColor(index: string): void;
 }
 
 function Lobby({
@@ -34,6 +37,7 @@ function Lobby({
   handleToggleLobbyUserReadyStatus,
   handleUpdateLobbyUserColorChoice,
   handleStartMatch,
+  toggleLightColor,
 }: LobbyProps) {
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
 
@@ -46,7 +50,14 @@ function Lobby({
   }
 
   if (lobby.lobbyState === LobbyStates.GAME) {
-    return <Game />;
+    return (
+      <Game lobby={lobby} self={self} toggleLightColor={toggleLightColor} />
+    );
+  }
+
+  if (lobby.lobbyState === LobbyStates.POST_GAME) {
+    console.log(lobby);
+    return <LobbyPostGame />;
   }
 
   // check if all players in lobby are ready to determine if the host can start the match
@@ -63,29 +74,6 @@ function Lobby({
     const player: LobbyPlayer = lobby.connectedUsers[i];
     // @ts-ignore
     takenColors.push(player.color);
-  }
-
-  function getColorString(color: string) {
-    const colorVal = parseInt(color);
-
-    switch (colorVal) {
-      case 0:
-        return "Red";
-      case 1:
-        return "Yellow";
-      case 2:
-        return "Blue";
-      case 3:
-        return "Green";
-      case 4:
-        return "Orange";
-      case 5:
-        return "Purple";
-      case 6:
-        return "White";
-      default:
-        break;
-    }
   }
 
   return (

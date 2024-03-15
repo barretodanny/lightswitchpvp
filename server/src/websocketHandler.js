@@ -21,6 +21,9 @@ const {
   updateLobbyPlayerColorChoice,
   startLobbyCountdown,
   startLobbyGame,
+  updateLobbyGameColor,
+  decrementLobbyGameTimer,
+  endLobbygame,
 } = require("./lobby");
 const {
   GET_SELF,
@@ -37,6 +40,7 @@ const {
   TOGGLE_LOBBY_PLAYER_READY_STATUS,
   UPDATE_LOBBY_PLAYER_COLOR_CHOICE,
   LOBBY_START_GAME,
+  UPDATE_GAME_LIGHT_COLOR,
 } = require("./messageTypes");
 
 let clients = [];
@@ -264,12 +268,40 @@ function handleWebSocketMessage(socket, message) {
         setTimeout(() => {
           updatedLobby = startLobbyGame(self, self.lobby);
           sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+
+          let timer = -1;
+          const itv = setInterval(() => {
+            updatedLobby = decrementLobbyGameTimer(self.lobby);
+            timer = updatedLobby.gameTimer;
+
+            if (timer === 0) {
+              updatedLobby = endLobbygame(self.lobby);
+              clearInterval(itv);
+            }
+            sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+          }, 1000);
         }, 3000);
       }
 
       // lobby no longer joinable, send updated lobby list to connected users
       const newLobbiesList = getLobbies();
       sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+
+      break;
+    }
+    case UPDATE_GAME_LIGHT_COLOR: {
+      const self = getSelf(socket);
+      let updatedLobby = updateLobbyGameColor(self, self.lobby, req.payload);
+
+      if (updatedLobby) {
+        const usersConnectedToLobby = [];
+        updatedLobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+      }
 
       break;
     }

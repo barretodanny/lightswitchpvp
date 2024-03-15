@@ -178,6 +178,14 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function toggleLightColor(index: string) {
+    const req = {
+      type: MessageType.UPDATE_GAME_LIGHT_COLOR,
+      payload: index,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -204,6 +212,7 @@ function App() {
           handleToggleLobbyUserReadyStatus={handleToggleLobbyUserReadyStatus}
           handleUpdateLobbyUserColorChoice={handleUpdateLobbyUserColorChoice}
           handleStartMatch={handleStartMatch}
+          toggleLightColor={toggleLightColor}
         />
       )}
     </>

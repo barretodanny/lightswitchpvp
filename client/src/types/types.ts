@@ -18,16 +18,14 @@ interface LobbySettings {
 }
 
 export interface Lobby {
-  lobbyId: string;
-  creatorId: string;
-  lobbyName: string;
   connectedUsers: string[];
-  settings: LobbySettings;
-  lobbyState: string;
-  user1Score: string;
-  user2Score: string;
-  lightState: string;
+  creatorId: string;
+  currentColor: number;
   gameTimer: string;
+  lobbyId: string;
+  lobbyName: string;
+  lobbyState: string;
+  settings: LobbySettings;
 }
 
 export enum Pages {
@@ -51,6 +49,7 @@ export enum MessageType {
   TOGGLE_LOBBY_PLAYER_READY_STATUS = "TOGGLE_LOBBY_PLAYER_READY_STATUS",
   UPDATE_LOBBY_PLAYER_COLOR_CHOICE = "UPDATE_LOBBY_PLAYER_COLOR_CHOICE",
   LOBBY_START_GAME = "LOBBY_START_GAME",
+  UPDATE_GAME_LIGHT_COLOR = "UPDATE_GAME_LIGHT_COLOR",
 }
 
 export enum LobbyStates {

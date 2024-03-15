@@ -10,6 +10,7 @@ export interface LobbyPlayer {
   lobby: string;
   readyStatus: string;
   color: string;
+  score: number;
 }
 
 interface LobbySettings {

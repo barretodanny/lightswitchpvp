@@ -1,4 +1,4 @@
-import { Lobby, User } from "../../types/types";
+import { Lobby, LobbyPlayer, User } from "../../types/types";
 
 interface LobbyPostGameProps {
   lobby: Lobby;
@@ -10,6 +10,13 @@ function LobbyPostGame({ lobby, self, handlePlayAgain }: LobbyPostGameProps) {
   if (!self) {
     return;
   }
+
+  function sortPlayersByScore(players: LobbyPlayer[]) {
+    return players.sort((p1, p2) => (p1.score >= p2.score ? -1 : 1));
+  }
+
+  // @ts-ignore
+  sortPlayersByScore(lobby.connectedUsers);
 
   return (
     <div>

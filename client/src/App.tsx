@@ -186,6 +186,13 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
+  function handlePlayAgain() {
+    const req = {
+      type: MessageType.LOBBY_PLAY_AGAIN,
+    };
+    socket?.send(JSON.stringify(req));
+  }
+
   return (
     <>
       {currentPage === Pages.LANDING_PAGE && (
@@ -213,6 +220,7 @@ function App() {
           handleUpdateLobbyUserColorChoice={handleUpdateLobbyUserColorChoice}
           handleStartMatch={handleStartMatch}
           toggleLightColor={toggleLightColor}
+          handlePlayAgain={handlePlayAgain}
         />
       )}
     </>

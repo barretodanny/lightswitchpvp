@@ -25,6 +25,7 @@ interface LobbyProps {
   ): void;
   handleStartMatch(): void;
   toggleLightColor(index: string): void;
+  handlePlayAgain(): void;
 }
 
 function Lobby({
@@ -38,6 +39,7 @@ function Lobby({
   handleUpdateLobbyUserColorChoice,
   handleStartMatch,
   toggleLightColor,
+  handlePlayAgain,
 }: LobbyProps) {
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
 
@@ -56,8 +58,13 @@ function Lobby({
   }
 
   if (lobby.lobbyState === LobbyStates.POST_GAME) {
-    console.log(lobby);
-    return <LobbyPostGame />;
+    return (
+      <LobbyPostGame
+        lobby={lobby}
+        self={self}
+        handlePlayAgain={handlePlayAgain}
+      />
+    );
   }
 
   // check if all players in lobby are ready to determine if the host can start the match

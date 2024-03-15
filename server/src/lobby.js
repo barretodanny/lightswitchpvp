@@ -173,6 +173,34 @@ function startLobbyGame(self, lobbyId) {
   return updatedLobby;
 }
 
+function lobbyPlayAgain(self, lobbyId) {
+  const lobby = lobbies.get(lobbyId);
+
+  if (self.userId !== lobby.creatorId) {
+    return;
+  }
+
+  let updatedConnectedUsers = [...lobby.connectedUsers];
+  for (let i = 0; i < updatedConnectedUsers.length; i++) {
+    let updatedUser = updatedConnectedUsers[i];
+
+    if (updatedUser.userId !== lobby.creatorId) {
+      updatedUser.readyStatus = false;
+    }
+    updatedUser.score = 0;
+    updatedConnectedUsers[i] = updatedUser;
+  }
+
+  const updatedLobby = {
+    ...lobby,
+    connectedUsers: updatedConnectedUsers,
+    lobbyState: SETUP,
+  };
+
+  lobbies.set(lobbyId, updatedLobby);
+  return updatedLobby;
+}
+
 function endLobbygame(lobbyId) {
   const lobby = lobbies.get(lobbyId);
 
@@ -424,4 +452,5 @@ module.exports = {
   printLobbies,
   updateLobbyGameColor,
   decrementLobbyGameTimer,
+  lobbyPlayAgain,
 };

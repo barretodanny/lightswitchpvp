@@ -24,6 +24,7 @@ const {
   updateLobbyGameColor,
   decrementLobbyGameTimer,
   endLobbygame,
+  lobbyPlayAgain,
 } = require("./lobby");
 const {
   GET_SELF,
@@ -41,6 +42,7 @@ const {
   UPDATE_LOBBY_PLAYER_COLOR_CHOICE,
   LOBBY_START_GAME,
   UPDATE_GAME_LIGHT_COLOR,
+  LOBBY_PLAY_AGAIN,
 } = require("./messageTypes");
 
 let clients = [];
@@ -292,6 +294,22 @@ function handleWebSocketMessage(socket, message) {
     case UPDATE_GAME_LIGHT_COLOR: {
       const self = getSelf(socket);
       let updatedLobby = updateLobbyGameColor(self, self.lobby, req.payload);
+
+      if (updatedLobby) {
+        const usersConnectedToLobby = [];
+        updatedLobby.connectedUsers.forEach((user) => {
+          const userSocket = getSocketByUser(user);
+          usersConnectedToLobby.push(userSocket);
+        });
+        usersConnectedToLobby.push(socket);
+        sendDataToClients(usersConnectedToLobby, GET_LOBBY, updatedLobby);
+      }
+
+      break;
+    }
+    case LOBBY_PLAY_AGAIN: {
+      const self = getSelf(socket);
+      let updatedLobby = lobbyPlayAgain(self, self.lobby);
 
       if (updatedLobby) {
         const usersConnectedToLobby = [];

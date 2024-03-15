@@ -10,7 +10,6 @@ interface GameProps {
 
 function Game({ lobby, self, toggleLightColor }: GameProps) {
   const [selfIndex, setSelfIndex] = useState<string>("");
-  console.log("render");
   return (
     <div>
       <div>
@@ -18,8 +17,6 @@ function Game({ lobby, self, toggleLightColor }: GameProps) {
         {lobby.connectedUsers.map((user, index) => {
           // @ts-ignore
           if (!selfIndex && user.userId === self?.userId) {
-            console.log(index.toString());
-            console.log("first");
             setSelfIndex(index.toString());
           }
           return (

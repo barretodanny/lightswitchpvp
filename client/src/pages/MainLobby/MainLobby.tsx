@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lobby, User } from "../../types/types";
+import { Lobby, LobbyStates, User } from "../../types/types";
 
 import styles from "./MainLobby.module.css";
 
@@ -70,7 +70,10 @@ function MainLobby({
                     {lobby.connectedUsers.length}/4 user(s)
                   </span>
                   <button
-                    disabled={lobby.connectedUsers.length >= 4}
+                    disabled={
+                      lobby.connectedUsers.length >= 4 ||
+                      lobby.lobbyState !== LobbyStates.SETUP
+                    }
                     onClick={() => handleJoinLobby(lobby.lobbyId)}
                   >
                     Join

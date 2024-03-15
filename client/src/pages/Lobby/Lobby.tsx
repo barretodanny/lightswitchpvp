@@ -64,7 +64,6 @@ function Lobby({
     // @ts-ignore
     takenColors.push(player.color);
   }
-  console.log(takenColors);
 
   function getColorString(color: string) {
     const colorVal = parseInt(color);

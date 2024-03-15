@@ -267,6 +267,10 @@ function handleWebSocketMessage(socket, message) {
         }, 3000);
       }
 
+      // lobby no longer joinable, send updated lobby list to connected users
+      const newLobbiesList = getLobbies();
+      sendDataToClients(clients, GET_LOBBIES, newLobbiesList);
+
       break;
     }
 

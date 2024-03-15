@@ -68,6 +68,10 @@ function joinLobby(self, lobbyId) {
     return;
   }
 
+  if (lobby.lobbyState !== SETUP) {
+    return;
+  }
+
   lobby.connectedUsers.push({
     ...self,
     readyStatus: false,

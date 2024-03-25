@@ -3,12 +3,12 @@
   flex-direction: column;
   height: 375px;
   width: 225px;
+  scale: 0.4;
 }
 
 .bulb {
   position: relative;
   height: 60%;
-  background-color: white;
   border-radius: 50%;
   border-radius: 50% 50% 50% 50%;
 }
@@ -19,15 +19,76 @@
   bottom: -70px;
   height: 80px;
   width: 90px;
-  background-color: white;
 }
 
-.on {
+.red {
+  background-color: red;
+}
+
+.redLightEffect {
+  box-shadow: 0 0 60px 10px red, 0 0 100px 10px rgb(215, 0, 0),
+    0 0 140px 10px rgb(175, 0, 0);
+}
+
+.yellow {
   background-color: yellow;
 }
 
-.lightEffect {
+.yellowLightEffect {
   box-shadow: 0 0 60px 10px yellow, 0 0 100px 10px orange, 0 0 140px 10px red;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.blueLightEffect {
+  box-shadow: 0 0 60px 10px blue, 0 0 100px 10px rgb(0, 0, 215),
+    0 0 140px 10px rgb(0, 0, 175);
+}
+
+.green {
+  background-color: rgb(0, 255, 0);
+}
+
+.greenLightEffect {
+  box-shadow: 0 0 60px 10px rgb(0, 255, 0), 0 0 100px 10px rgb(0, 215, 0),
+    0 0 140px 10px green;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.orangeLightEffect {
+  box-shadow: 0 0 60px 10px orange, 0 0 100px 10px rgb(255, 115, 0),
+    0 0 140px 10px red;
+}
+
+.purple {
+  background-color: rgb(255, 0, 255);
+}
+
+.purpleLightEffect {
+  box-shadow: 0 0 60px 10px rgb(255, 0, 255), 0 0 100px 10px rgb(185, 0, 185),
+    0 0 140px 10px purple;
+}
+
+.white {
+  background-color: white;
+}
+
+.whiteLightEffect {
+  box-shadow: 0 0 60px 10px white, 0 0 100px 10px white, 0 0 140px 10px white;
+}
+
+.pink {
+  background-color: pink;
+}
+
+.pinkLightEffect {
+  box-shadow: 0 0 60px 10px pink, 0 0 100px 10px rgb(235, 165, 175),
+    0 0 140px 10px rgb(215, 125, 135);
 }
 
 .base {

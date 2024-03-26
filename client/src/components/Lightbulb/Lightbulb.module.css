@@ -101,3 +101,21 @@
   background-color: black;
   border-radius: 0 0 8px 8px;
 }
+
+@media only screen and (max-width: 1000px) {
+  .lightbulb {
+    scale: 0.85;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .lightbulb {
+    scale: 0.65;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .lightbulb {
+    scale: 0.5;
+  }
+}

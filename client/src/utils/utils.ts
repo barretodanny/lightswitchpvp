@@ -1,22 +1,12 @@
+const NUM_COLORS = 7;
+const colors = ["Red", "Yellow", "Blue", "Green", "Orange", "Purple", "White"];
+
+export function getRandomColor() {
+  return colors[Math.floor(Math.random() * (NUM_COLORS - 1)) + 1];
+}
+
 export function getColorString(color: string) {
   const colorVal = parseInt(color);
 
-  switch (colorVal) {
-    case 0:
-      return "Red";
-    case 1:
-      return "Yellow";
-    case 2:
-      return "Blue";
-    case 3:
-      return "Green";
-    case 4:
-      return "Orange";
-    case 5:
-      return "Purple";
-    case 6:
-      return "White";
-    default:
-      break;
-  }
+  return colors[colorVal];
 }

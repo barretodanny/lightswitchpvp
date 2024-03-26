@@ -9,31 +9,46 @@ interface LandingPageProps {
   connectToServer: () => void;
 }
 
+function getColorStyleClass(color: string) {
+  switch (color) {
+    case "red":
+      return { bg: "redbg" };
+    case "yellow":
+      return { bg: "yellowbg" };
+    case "blue":
+      return { bg: "bluebg" };
+    case "green":
+      return { bg: "greenbg" };
+    case "orange":
+      return { bg: "orangebg" };
+    case "purple":
+      return { bg: "purplebg" };
+    case "white":
+      return { bg: "whitebg" };
+    case "pink":
+      return { bg: "pinkbg" };
+    default:
+      return { bg: "nonebg" };
+  }
+}
+
 function LandingPage({ connectToServer }: LandingPageProps) {
   const [on, setOn] = useState(false);
 
   const newColor = getRandomColor().toLowerCase();
+  console.log(newColor);
+  const colorStyle = getColorStyleClass(on ? newColor : "");
 
   return (
     <div className={styles.container}>
-      <div
-        className={`${styles.headingWrapper} ${
-          on ? styles.bgOn : styles.bgOff
-        }`}
-      >
+      <div className={`${styles.headingWrapper} ${styles[colorStyle.bg]}`}>
         <h1>Lightswitch PVP</h1>
       </div>
-      <div
-        className={`${styles.backgroundContainer} ${
-          on ? styles.bgOn : styles.bgOff
-        }`}
-      >
+      <div className={`${styles.backgroundContainer} ${styles[colorStyle.bg]}`}>
         <Switch on={on} setOn={setOn} />
         <Lightbulb color={on ? newColor : "none"} />
       </div>
-      <div
-        className={`${styles.btnWrapper} ${on ? styles.bgOn : styles.bgOff}`}
-      >
+      <div className={`${styles.btnWrapper} ${styles[colorStyle.bg]}`}>
         <button
           className={styles.btn}
           onClick={() => {

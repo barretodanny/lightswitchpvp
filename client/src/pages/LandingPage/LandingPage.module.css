@@ -38,7 +38,6 @@
   justify-content: center;
   align-items: center;
   height: 10%;
-  background-color: red;
 }
 
 .backgroundContainer {
@@ -49,11 +48,39 @@
   height: 80%;
 }
 
-.bgOn {
+.redbg {
   background-color: #222;
 }
 
-.bgOff {
+.yellowbg {
+  background-color: #302c1b;
+}
+
+.bluebg {
+  background-color: #202135;
+}
+
+.greenbg {
+  background-color: #283525;
+}
+
+.orangebg {
+  background-color: #3a2f28;
+}
+
+.purplebg {
+  background-color: #291f30;
+}
+
+.whitebg {
+  background-color: #222;
+}
+
+.pinkbg {
+  background-color: #3a2c35;
+}
+
+.nonebg {
   background-color: black;
 }
 

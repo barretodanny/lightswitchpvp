@@ -3,7 +3,6 @@
   flex-direction: column;
   height: 375px;
   width: 225px;
-  scale: 0.4;
 }
 
 .bulb {
@@ -89,6 +88,10 @@
 .pinkLightEffect {
   box-shadow: 0 0 60px 10px pink, 0 0 100px 10px rgb(235, 165, 175),
     0 0 140px 10px rgb(215, 125, 135);
+}
+
+.none {
+  background-color: black;
 }
 
 .base {

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Lightbulb from "../../components/Lightbulb/Lightbulb";
+import Switch from "../../components/Switch/Switch";
+import { getRandomColor } from "../../utils/utils";
 
 import styles from "./LandingPage.module.css";
 
@@ -10,18 +12,37 @@ interface LandingPageProps {
 function LandingPage({ connectToServer }: LandingPageProps) {
   const [on, setOn] = useState(false);
 
+  const newColor = getRandomColor().toLowerCase();
+
   return (
-    <div className={styles.container} onClick={() => setOn((prev) => !prev)}>
-      <h1>Lightswitch PVP</h1>
-      <Lightbulb on={on} />
-      <button
-        className={styles.btn}
-        onClick={() => {
-          connectToServer();
-        }}
+    <div className={styles.container}>
+      <div
+        className={`${styles.headingWrapper} ${
+          on ? styles.bgOn : styles.bgOff
+        }`}
       >
-        Play
-      </button>
+        <h1>Lightswitch PVP</h1>
+      </div>
+      <div
+        className={`${styles.backgroundContainer} ${
+          on ? styles.bgOn : styles.bgOff
+        }`}
+      >
+        <Switch on={on} setOn={setOn} />
+        <Lightbulb color={on ? newColor : "none"} />
+      </div>
+      <div
+        className={`${styles.btnWrapper} ${on ? styles.bgOn : styles.bgOff}`}
+      >
+        <button
+          className={styles.btn}
+          onClick={() => {
+            connectToServer();
+          }}
+        >
+          Play
+        </button>
+      </div>
     </div>
   );
 }

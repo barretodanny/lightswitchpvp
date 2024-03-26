@@ -1,0 +1,38 @@
+.switchContainer {
+  height: 185px;
+  width: 125px;
+  background-color: #aaa;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.switchInner {
+  position: relative;
+  height: 70%;
+  width: 65%;
+  border-radius: 8px;
+  border: 2px solid black;
+  background-color: white;
+}
+
+.switchOn {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 55%;
+  background-color: #ddd;
+  border-radius: 4px 4px 8px 8px;
+  box-shadow: 0 10px 12px 0 black;
+}
+
+.switchOff {
+  position: absolute;
+  top: 6px;
+  width: 100%;
+  height: 45%;
+  background-color: #ddd;
+  border-radius: 0 0 8px 8px;
+}

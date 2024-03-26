@@ -23,7 +23,7 @@ function getColorStyleClass(color: string) {
     case "pink":
       return { color: "pink", lightEffect: "pinkLightEffect" };
     default:
-      return { color: "yellow", lightEffect: "yellowLightEffect" };
+      return { color: "none", lightEffect: "noneLightEffect" };
   }
 }
 

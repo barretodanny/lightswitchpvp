@@ -67,9 +67,7 @@ function App() {
     setSocket(socket);
   }
 
-  function handleUpdateUsername(e: React.FormEvent, newUsername: string) {
-    e.preventDefault();
-
+  function handleUpdateUsername(newUsername: string) {
     if (socket?.readyState === socket?.CLOSED) {
       alert("Error connecting to server.");
     }
@@ -81,9 +79,7 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
-  function handleCreateLobby(e: React.FormEvent, lobbyName: string) {
-    e.preventDefault();
-
+  function handleCreateLobby(lobbyName: string) {
     if (socket?.readyState === socket?.CLOSED) {
       alert("Error connecting to server.");
     }

@@ -102,11 +102,13 @@
 @media only screen and (max-width: 450px) {
   .container h1 {
     font-size: 32px;
+    margin-bottom: 35px;
   }
 }
 
 @media only screen and (max-width: 280px) {
   .container h1 {
     font-size: 24px;
+    margin-bottom: 20px;
   }
 }

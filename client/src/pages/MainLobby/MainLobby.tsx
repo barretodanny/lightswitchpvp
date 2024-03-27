@@ -7,8 +7,8 @@ interface MainLobbyProps {
   self: User | undefined;
   connectedUsers: User[];
   lobbies: Lobby[];
-  handleUpdateUsername(e: React.FormEvent, newUsername: string): void;
-  handleCreateLobby(e: React.FormEvent, lobbyName: string): void;
+  handleUpdateUsername(newUsername: string): void;
+  handleCreateLobby(lobbyName: string): void;
   handleJoinLobby(lobbyId: string): void;
 }
 
@@ -22,79 +22,112 @@ function MainLobby({
 }: MainLobbyProps) {
   const [usernameField, setUsernameField] = useState(self?.username || "");
   const [lobbynameField, setLobbynameField] = useState("");
+  const [shownContent, setShownContent] = useState("LOBBY_LIST");
 
   return (
     <div className={styles.container}>
-      <h1>Lightswitch PVP</h1>
-      <h2>
-        Welcome {self?.username} - {self?.lobby}
-      </h2>
-      <div className={styles.formWrapper}>
-        <p>Choose your username</p>
-        <form
-          onSubmit={(e: React.FormEvent) =>
-            handleUpdateUsername(e, usernameField)
-          }
-        >
+      <div className={styles.headingWrapper}>
+        <h1>Lightswitch PVP</h1>
+      </div>
+      <div className={styles.subheadingWrapper}>
+        <h2>Welcome {self?.username}</h2>
+      </div>
+      <div className={styles.usernameInputWrapper}>
+        <h3>Update Your Username</h3>
+        <div className={styles.usernameInput}>
           <input
             type="text"
             value={usernameField}
             onChange={(e) => setUsernameField(e.target.value)}
           />
-          <button>Update</button>
-        </form>
-      </div>
-      <div style={{ display: "flex", gap: 15 }}>
-        <div>
-          <p>Online Users</p>
-          <div>
-            {connectedUsers.map((user) => {
-              return (
-                <div key={user.userId}>
-                  <span>
-                    {user.userId} - {user.username}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          <button onClick={() => handleUpdateUsername(usernameField)}>
+            Update
+          </button>
         </div>
-        <div>
-          <p>Open Lobbies</p>
-          <div>
-            {lobbies.map((lobby) => {
-              return (
-                <div key={lobby.lobbyId}>
-                  <span>
-                    {lobby.lobbyId} - {lobby.lobbyName} -{" "}
-                    {lobby.connectedUsers.length}/4 user(s)
-                  </span>
+      </div>
+      <div className={styles.bottom}>
+        <div className={styles.contentWrapper}>
+          {shownContent === "LOBBY_LIST" && (
+            <>
+              <div className={styles.lobbyListWrapper}>
+                <h3>Lobbies</h3>
+                <div className={styles.lobbyList}>
+                  {lobbies.map((lobby) => {
+                    return (
+                      <div key={lobby.lobbyId} className={styles.lobbyListItem}>
+                        <span>Lobby Name: {lobby.lobbyName}</span>
+                        <button
+                          disabled={
+                            lobby.connectedUsers.length >= 4 ||
+                            lobby.lobbyState !== LobbyStates.SETUP
+                          }
+                          onClick={() => handleJoinLobby(lobby.lobbyId)}
+                        >
+                          Join ({lobby.connectedUsers.length}/4)
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+          {shownContent === "CREATE_LOBBY" && (
+            <>
+              <div className={styles.lobbyInputWrapper}>
+                <h3>Create Lobby</h3>
+                <div className={styles.lobbyInput}>
+                  <input
+                    type="text"
+                    value={lobbynameField}
+                    onChange={(e) => setLobbynameField(e.target.value)}
+                  />
                   <button
-                    disabled={
-                      lobby.connectedUsers.length >= 4 ||
-                      lobby.lobbyState !== LobbyStates.SETUP
-                    }
-                    onClick={() => handleJoinLobby(lobby.lobbyId)}
+                    onClick={() => handleCreateLobby(lobbynameField)}
+                    disabled={lobbynameField.length === 0}
                   >
-                    Join
+                    Create
                   </button>
                 </div>
-              );
-            })}
-          </div>
-          <div>
-            <form
-              onSubmit={(e: React.FormEvent) =>
-                handleCreateLobby(e, lobbynameField)
-              }
+              </div>
+            </>
+          )}
+          {shownContent === "USER_LIST" && (
+            <>
+              <div className={styles.userListWrapper}>
+                <h3>Online Users</h3>
+                <div className={styles.userList}>
+                  {connectedUsers.map((user) => {
+                    return (
+                      <div key={user.userId} className={styles.userListItem}>
+                        <span>Username: {user.username}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+          <div className={styles.btnsWrapper}>
+            <button
+              onClick={() => {
+                setShownContent("LOBBY_LIST");
+                setLobbynameField("");
+              }}
             >
-              <input
-                type="text"
-                value={lobbynameField}
-                onChange={(e) => setLobbynameField(e.target.value)}
-              />
-              <button type="submit">Create Lobby</button>
-            </form>
+              Show Lobbies
+            </button>
+            <button
+              onClick={() => {
+                setShownContent("USER_LIST");
+                setLobbynameField("");
+              }}
+            >
+              Show Users
+            </button>
+            <button onClick={() => setShownContent("CREATE_LOBBY")}>
+              Create Lobby
+            </button>
           </div>
         </div>
       </div>

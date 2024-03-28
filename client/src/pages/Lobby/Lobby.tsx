@@ -65,7 +65,6 @@ function Lobby({
   handlePlayAgain,
 }: LobbyProps) {
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
-  const [ready, setReady] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   if (!lobby || !self) {
@@ -283,11 +282,14 @@ function Lobby({
                 <>
                   <button
                     onClick={() => {
-                      setReady((prev) => !prev);
+                      // setReady((prev) => !prev);
                       handleToggleLobbyUserReadyStatus(selfIndex.toString());
                     }}
                   >
-                    {ready ? "Unready" : "Ready"}
+                    {/* @ts-ignore */}
+                    {lobby.connectedUsers[selfIndex].readyStatus
+                      ? "Unready"
+                      : "Ready"}
                   </button>
                 </>
               )}

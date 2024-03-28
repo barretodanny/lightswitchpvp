@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import styles from "./LobbyCountdown.module.css";
+
 function LobbyCountdown() {
   const [timer, setTimer] = useState(3);
 
@@ -13,7 +15,16 @@ function LobbyCountdown() {
     };
   }, []);
 
-  return <div>{timer}</div>;
+  return (
+    <div className={styles.container}>
+      <div className={styles.headingWrapper}>
+        <h1>Lightswitch PVP</h1>
+      </div>
+      <div className={styles.countdownWrapper}>
+        <h3>{timer}</h3>
+      </div>
+    </div>
+  );
 }
 
 export default LobbyCountdown;

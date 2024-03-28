@@ -381,6 +381,11 @@ function updateLobbyGameColor(self, lobbyId, index) {
 
 function decrementLobbyGameTimer(lobbyId) {
   const lobby = lobbies.get(lobbyId);
+
+  if (!lobby) {
+    return;
+  }
+
   const newTime = lobby.gameTimer - 1;
   const now = Date.now();
   let scoringUser = undefined;

@@ -274,6 +274,11 @@ function handleWebSocketMessage(socket, message) {
           let timer = -1;
           const itv = setInterval(() => {
             updatedLobby = decrementLobbyGameTimer(self.lobby);
+
+            if (!updatedLobby) {
+              return;
+            }
+
             timer = updatedLobby.gameTimer;
 
             if (timer === 0) {

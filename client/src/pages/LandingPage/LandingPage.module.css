@@ -6,15 +6,6 @@
   width: 100%;
 }
 
-.container h1 {
-  margin: 50px 0;
-  margin-top: 50px;
-  font-family: Arial, Helvetica, sans-serif;
-  color: white;
-  user-select: none;
-  font-size: 48px;
-}
-
 .btn {
   padding: 12px;
   height: 50px;
@@ -34,10 +25,18 @@
 
 .headingWrapper {
   width: 100%;
+  height: 75px;
+  min-height: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 10%;
+}
+
+.headingWrapper h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  user-select: none;
+  font-size: 48px;
 }
 
 .backgroundContainer {
@@ -100,14 +99,14 @@
 }
 
 @media only screen and (max-width: 450px) {
-  .container h1 {
+  .headingWrapper h1 {
     font-size: 32px;
     margin-bottom: 35px;
   }
 }
 
 @media only screen and (max-width: 280px) {
-  .container h1 {
+  .headingWrapper h1 {
     font-size: 24px;
     margin-bottom: 20px;
   }

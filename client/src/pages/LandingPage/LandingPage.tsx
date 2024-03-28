@@ -36,11 +36,10 @@ function LandingPage({ connectToServer }: LandingPageProps) {
   const [on, setOn] = useState(false);
 
   const newColor = getRandomColor().toLowerCase();
-  console.log(newColor);
   const colorStyle = getColorStyleClass(on ? newColor : "");
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${styles[colorStyle.bg]}`}>
       <div className={`${styles.headingWrapper} ${styles[colorStyle.bg]}`}>
         <h1>Lightswitch PVP</h1>
       </div>

@@ -139,9 +139,7 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
-  function handleToggleLobbyUserReadyStatus(e: React.FormEvent, index: string) {
-    e.preventDefault();
-
+  function handleToggleLobbyUserReadyStatus(index: string) {
     const req = {
       type: MessageType.TOGGLE_LOBBY_PLAYER_READY_STATUS,
       payload: index,

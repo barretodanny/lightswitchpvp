@@ -107,9 +107,7 @@ function App() {
     socket?.send(JSON.stringify(req));
   }
 
-  function handleUpdateLobbyName(e: React.FormEvent, newLobbyname: string) {
-    e.preventDefault();
-
+  function handleUpdateLobbyName(newLobbyname: string) {
     const req = {
       type: MessageType.UPDATE_LOBBY_NAME,
       payload: newLobbyname,

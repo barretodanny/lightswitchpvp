@@ -38,7 +38,7 @@ interface LobbyProps {
   self: User | undefined;
   lobby: LobbyType | undefined;
   handleLeaveLobby(lobbyId: string): void;
-  handleUpdateLobbyName(e: React.FormEvent, newLobbyname: string): void;
+  handleUpdateLobbyName(newLobbyname: string): void;
   handleUpdateLobbyGameTimer(e: React.FormEvent, newGameTimer: string): void;
   handleLobbyRandomizeSwitchToggle(e: React.FormEvent): void;
   handleToggleLobbyUserReadyStatus(index: string): void;
@@ -58,7 +58,6 @@ function Lobby({
   handleLeaveLobby,
   handleUpdateLobbyName,
   handleUpdateLobbyGameTimer,
-  handleLobbyRandomizeSwitchToggle,
   handleToggleLobbyUserReadyStatus,
   handleUpdateLobbyUserColorChoice,
   handleStartMatch,
@@ -68,6 +67,7 @@ function Lobby({
   const [lobbynameField, setLobbynameField] = useState(lobby?.lobbyName || "");
   const [gameTimer, setGameTimer] = useState(60);
   const [ready, setReady] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   if (!lobby || !self) {
     return;
@@ -127,105 +127,320 @@ function Lobby({
       <div className={styles.lobbyWrapper}>
         <div className={styles.infoWrapper}>
           <h2>{lobby.lobbyName}</h2>
-          <h3>Game Timer: {gameTimer}</h3>
+          <h3>Game Timer: {lobby.settings.gameTimer}</h3>
         </div>
-        <div className={styles.userListWrapper}>
-          {lobby.connectedUsers.map((user) => {
-            // @ts-ignore
-            const colorStyle = getColorStyleClass(user.color.toString());
-            return (
-              <div
-                // @ts-ignore
-                key={user.userId}
-                className={`${styles.userItem} ${styles[colorStyle.bg]} ${
-                  styles[colorStyle.color]
-                }`}
-              >
-                {/* @ts-ignore */}
-                {user.username} ({user.readyStatus ? "Ready" : "Not Ready"})
+
+        <>
+          {!showSettings && (
+            <>
+              <div className={styles.userListWrapper}>
+                {lobby.connectedUsers.map((user) => {
+                  // @ts-ignore
+                  const colorStyle = getColorStyleClass(user.color.toString());
+                  return (
+                    <div
+                      // @ts-ignore
+                      key={user.userId}
+                      className={`${styles.userItem} ${styles[colorStyle.bg]} ${
+                        styles[colorStyle.color]
+                      }`}
+                    >
+                      {/* @ts-ignore */}
+                      {user.username} ({/* @ts-ignore */}
+                      {user.readyStatus ? "Ready" : "Not Ready"})
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
-        <div className={styles.btnWrapper}>
-          <div className={styles.colorsWrapper}>
-            <h3>Choose color</h3>
-            <div className={styles.colorBtnsWrapper}>
-              <button
-                disabled={takenColors.includes(0)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "0")
-                }
-                className={`${styles.redbg} ${styles.white}`}
-              ></button>
-              <button
-                disabled={takenColors.includes(1)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "1")
-                }
-                className={`${styles.yellowbg} ${styles.white}`}
-              ></button>
-              <button
-                disabled={takenColors.includes(2)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "2")
-                }
-                className={`${styles.bluebg} ${styles.white}`}
-              ></button>
-              <button
-                disabled={takenColors.includes(3)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "3")
-                }
-                className={`${styles.greenbg} ${styles.white}`}
-              ></button>
-              <button
-                disabled={takenColors.includes(4)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "4")
-                }
-                className={`${styles.orangebg} ${styles.white}`}
-              ></button>
-              <button
-                disabled={takenColors.includes(5)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "5")
-                }
-                className={`${styles.purplebg} ${styles.white}`}
-              ></button>
-              <button
-                disabled={takenColors.includes(6)}
-                onClick={(e) =>
-                  handleUpdateLobbyUserColorChoice(e, selfIndex.toString(), "6")
-                }
-                className={`${styles.whitebg} ${styles.white}`}
-              ></button>
+            </>
+          )}
+          {showSettings && (
+            <>
+              <div className={styles.settingsWrapper}>
+                <h3>Update Lobby Name</h3>
+                <div className={styles.lobbynameInputWrapper}>
+                  <input
+                    type="text"
+                    value={lobbynameField}
+                    onChange={(e) => setLobbynameField(e.target.value)}
+                  />
+                  <button onClick={() => handleUpdateLobbyName(lobbynameField)}>
+                    Update lobby name
+                  </button>
+                </div>
+
+                <h3>Choose Game Length (seconds)</h3>
+                <div className={styles.gameTimerBtns}>
+                  <button onClick={(e) => handleUpdateLobbyGameTimer(e, "30")}>
+                    30
+                  </button>
+                  <button onClick={(e) => handleUpdateLobbyGameTimer(e, "60")}>
+                    60
+                  </button>
+                  <button onClick={(e) => handleUpdateLobbyGameTimer(e, "120")}>
+                    120
+                  </button>
+                  <button onClick={(e) => handleUpdateLobbyGameTimer(e, "300")}>
+                    300
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+          <div className={styles.btnWrapper}>
+            <div className={styles.colorsWrapper}>
+              <h3>Choose color</h3>
+              <div className={styles.colorBtnsWrapper}>
+                <button
+                  disabled={takenColors.includes(0)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "0"
+                    )
+                  }
+                  className={`${styles.redbg} ${styles.white}`}
+                ></button>
+                <button
+                  disabled={takenColors.includes(1)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "1"
+                    )
+                  }
+                  className={`${styles.yellowbg} ${styles.white}`}
+                ></button>
+                <button
+                  disabled={takenColors.includes(2)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "2"
+                    )
+                  }
+                  className={`${styles.bluebg} ${styles.white}`}
+                ></button>
+                <button
+                  disabled={takenColors.includes(3)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "3"
+                    )
+                  }
+                  className={`${styles.greenbg} ${styles.white}`}
+                ></button>
+                <button
+                  disabled={takenColors.includes(4)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "4"
+                    )
+                  }
+                  className={`${styles.orangebg} ${styles.white}`}
+                ></button>
+                <button
+                  disabled={takenColors.includes(5)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "5"
+                    )
+                  }
+                  className={`${styles.purplebg} ${styles.white}`}
+                ></button>
+                <button
+                  disabled={takenColors.includes(6)}
+                  onClick={(e) =>
+                    handleUpdateLobbyUserColorChoice(
+                      e,
+                      selfIndex.toString(),
+                      "6"
+                    )
+                  }
+                  className={`${styles.whitebg} ${styles.white}`}
+                ></button>
+              </div>
+            </div>
+            <div className={styles.bottomWrapper}>
+              {lobby.creatorId === self.userId ? (
+                <>
+                  <button disabled={!canStart} onClick={handleStartMatch}>
+                    Start
+                  </button>
+                  <button onClick={() => setShowSettings((prev) => !prev)}>
+                    {showSettings ? "Back" : "Settings"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setReady((prev) => !prev);
+                      handleToggleLobbyUserReadyStatus(selfIndex.toString());
+                    }}
+                  >
+                    {ready ? "Unready" : "Ready"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
-          <div className={styles.bottomWrapper}>
-            {lobby.creatorId === self.userId ? (
-              <>
-                <button disabled={!canStart} onClick={handleStartMatch}>
-                  Start
-                </button>
-                <button>Settings</button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => {
-                    setReady((prev) => !prev);
-                    handleToggleLobbyUserReadyStatus(selfIndex.toString());
-                  }}
-                >
-                  {ready ? "Unready" : "Ready"}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+        </>
       </div>
     </div>
+    // <div>
+    //   <p>ID: {lobby.lobbyId}</p>
+    //   <p>Name: {lobby.lobbyName}</p>
+    //   {self.userId === lobby.creatorId && (
+    //     <div>
+    //       <p>CREATOR</p>
+    //       <div>
+    //         <form onSubmit={(e) => handleUpdateLobbyName(e, lobbynameField)}>
+    //           <input
+    //             type="text"
+    //             value={lobbynameField}
+    //             onChange={(e) => setLobbynameField(e.target.value)}
+    //           />
+    //           <button>Update lobby name</button>
+    //         </form>
+    //       </div>
+    //     </div>
+    //   )}
+    //   <div>
+    //     <p>settings</p>
+    //     <p>game timer:{lobby.settings.gameTimer}</p>
+    //     {self.userId === lobby.creatorId && (
+    //       <div>
+    //         <button onClick={(e) => handleUpdateLobbyGameTimer(e, "30")}>
+    //           30
+    //         </button>
+    //         <button onClick={(e) => handleUpdateLobbyGameTimer(e, "60")}>
+    //           60
+    //         </button>
+    //         <button onClick={(e) => handleUpdateLobbyGameTimer(e, "120")}>
+    //           120
+    //         </button>
+    //         <button onClick={(e) => handleUpdateLobbyGameTimer(e, "300")}>
+    //           300
+    //         </button>
+    //       </div>
+    //     )}
+    //     <p>
+    //       randomize switch: {lobby.settings.randomizeSwitch ? "on" : "off"}
+    //       {self.userId === lobby.creatorId && (
+    //         <button onClick={(e) => handleLobbyRandomizeSwitchToggle(e)}>
+    //           Turn {!lobby.settings.randomizeSwitch ? "on" : "off"}
+    //         </button>
+    //       )}
+    //     </p>
+    //   </div>
+    //   <p>Connected users:</p>
+    //   <div>
+    //     {/* @ts-ignore */}
+    //     {lobby.connectedUsers.map((user: LobbyPlayer, index) => {
+    //       return (
+    //         <div key={user.userId}>
+    //           <span>
+    //             {user.userId} - {user.username} ---{" "}
+    //             {lobby.creatorId === user.userId ? (
+    //               <>
+    //                 <span>(HOST)</span>
+
+    //                 {self.userId === user.userId && canStart && (
+    //                   <button onClick={handleStartMatch}>Start</button>
+    //                 )}
+    //               </>
+    //             ) : (
+    //               <>
+    //                 <span>{user.readyStatus ? "READY" : "NOT READY"}</span>
+    //                 {self.userId === user.userId && (
+    //                   <button
+    //                     onClick={(e) =>
+    //                       handleToggleLobbyUserReadyStatus(e, index.toString())
+    //                     }
+    //                   >
+    //                     {!user.readyStatus ? "READY" : "UNREADY"}
+    //                   </button>
+    //                 )}
+    //               </>
+    //             )}
+    //           </span>
+    //           {self.userId === user.userId && (
+    //             <div>
+    //               <p>Choose a color:</p>
+    //               <button
+    //                 disabled={takenColors.includes(0)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "0")
+    //                 }
+    //               >
+    //                 Red
+    //               </button>
+    //               <button
+    //                 disabled={takenColors.includes(1)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "1")
+    //                 }
+    //               >
+    //                 Yellow
+    //               </button>
+    //               <button
+    //                 disabled={takenColors.includes(2)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "2")
+    //                 }
+    //               >
+    //                 Blue
+    //               </button>
+    //               <button
+    //                 disabled={takenColors.includes(3)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "3")
+    //                 }
+    //               >
+    //                 Green
+    //               </button>
+    //               <button
+    //                 disabled={takenColors.includes(4)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "4")
+    //                 }
+    //               >
+    //                 Orange
+    //               </button>
+    //               <button
+    //                 disabled={takenColors.includes(5)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "5")
+    //                 }
+    //               >
+    //                 Purple
+    //               </button>
+    //               <button
+    //                 disabled={takenColors.includes(6)}
+    //                 onClick={(e) =>
+    //                   handleUpdateLobbyUserColorChoice(e, index.toString(), "6")
+    //                 }
+    //               >
+    //                 White
+    //               </button>
+    //             </div>
+    //           )}
+    //         </div>
+    //       );
+    //     })}
+    //   </div>
+    //   <button onClick={() => handleLeaveLobby(lobby.lobbyId)}>Leave</button>
+    // </div>
   );
 }
 

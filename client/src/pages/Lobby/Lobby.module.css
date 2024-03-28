@@ -46,7 +46,8 @@
 
 .infoWrapper h2,
 .infoWrapper h3,
-.colorsWrapper h3 {
+.colorsWrapper h3,
+.settingsWrapper h3 {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   color: white;
@@ -58,6 +59,49 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.settingsWrapper {
+  height: 60%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.lobbynameInputWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 80%;
+}
+
+.lobbynameInputWrapper input {
+  width: 100%;
+  padding: 11px 6px;
+  border: 1px solid black;
+}
+
+.lobbynameInputWrapper button {
+  height: 40px;
+  width: 50%;
+  cursor: pointer;
+}
+
+.gameTimerBtns {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+}
+
+.gameTimerBtns button {
+  height: 40px;
+  width: 60px;
+  cursor: pointer;
 }
 
 .userItem {

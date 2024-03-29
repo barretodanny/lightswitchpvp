@@ -1,4 +1,7 @@
 import { Lobby, LobbyPlayer, User } from "../../types/types";
+import { getColorString } from "../../utils/utils";
+
+import styles from "./LobbyPostGame.module.css";
 
 interface LobbyPostGameProps {
   lobby: Lobby;
@@ -17,28 +20,47 @@ function LobbyPostGame({ lobby, self, handlePlayAgain }: LobbyPostGameProps) {
 
   // @ts-ignore
   sortPlayersByScore(lobby.connectedUsers);
+  // @ts-ignore
+  const winner: LobbyPlayer = lobby.connectedUsers[0];
 
   return (
-    <div>
-      <div>
-        <p>Users</p>
-        <div>
-          {lobby.connectedUsers.map((user) => {
+    <div className={styles.container}>
+      <div className={styles.headingWrapper}>
+        <h1>Lightswitch PVP</h1>
+      </div>
+      <div className={styles.resultInfoWrapper}>
+        {/* ts-ignore */}
+        <h3>
+          Winner: {winner.username} ({getColorString(winner.color)}) - Score:{" "}
+          {winner.score}
+        </h3>
+        <div className={styles.userListWrapper}>
+          {lobby.connectedUsers.map((user, index) => {
+            if (index === 0) {
+              return <></>;
+            }
+
             return (
               // @ts-ignore
-              <div key={user.userId}>
+              <span key={user.userId}>
                 {/* @ts-ignore */}
-                userId: {user.userId} username: {user.username} score:{" "}
+                {user.username} ({getColorString(user.color)}) - score:{" "}
                 {/* @ts-ignore */}
                 {user.score}
-              </div>
+              </span>
             );
           })}
         </div>
       </div>
-      {self.userId === lobby.creatorId && (
-        <button onClick={() => handlePlayAgain()}>Play again</button>
-      )}
+
+      <button
+        title={self.userId === lobby.creatorId ? "" : "Waiting for host..."}
+        onClick={() => handlePlayAgain()}
+        className={styles.btn}
+        disabled={!(self.userId === lobby.creatorId)}
+      >
+        Play again
+      </button>
     </div>
   );
 }

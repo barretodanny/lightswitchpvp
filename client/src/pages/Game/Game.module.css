@@ -1,0 +1,144 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: #222;
+}
+
+.headingWrapper {
+  width: 100%;
+  height: 75px;
+  min-height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.headingWrapper h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  user-select: none;
+  font-size: 48px;
+}
+
+.backgroundContainer {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 80%;
+  scale: 0.8;
+}
+
+.redbg {
+  background-color: #222;
+}
+
+.red {
+  color: red;
+}
+
+.yellowbg {
+  background-color: #302c1b;
+}
+
+.yellow {
+  color: yellow;
+}
+
+.bluebg {
+  background-color: #202135;
+}
+
+.blue {
+  color: blue;
+}
+
+.greenbg {
+  background-color: #283525;
+}
+
+.green {
+  color: green;
+}
+
+.orangebg {
+  background-color: #3a2f28;
+}
+
+.orange {
+  color: orange;
+}
+
+.purplebg {
+  background-color: #291f30;
+}
+
+.purple {
+  color: purple;
+}
+
+.whitebg {
+  background-color: #222;
+}
+
+.white {
+  color: whitesmoke;
+}
+
+.pinkbg {
+  background-color: #3a2c35;
+}
+
+.pink {
+  color: pink;
+}
+
+.nonebg {
+  background-color: black;
+}
+
+.gameInfoWrapper {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+}
+
+.gameInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.scoring {
+  color: gold;
+}
+
+@media only screen and (max-width: 700px) {
+  .backgroundContainer {
+    flex-direction: column-reverse;
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .headingWrapper h1 {
+    font-size: 32px;
+    margin-bottom: 35px;
+  }
+
+  .gameInfoWrapper {
+    font-size: 13px;
+  }
+}
+
+@media only screen and (max-width: 280px) {
+  .headingWrapper h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+}

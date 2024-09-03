@@ -1,6 +1,8 @@
 .switchContainer {
   height: 185px;
+  min-height: 185px;
   width: 125px;
+  min-width: 125px;
   background-color: #aaa;
   cursor: pointer;
   display: flex;
@@ -52,5 +54,11 @@
 @media only screen and (max-width: 450px) {
   .switchContainer {
     scale: 0.65;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .switchContainer {
+    scale: 0.45;
   }
 }

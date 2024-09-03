@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "server": "file:",
-    "ws": "^8.16.0"
+    "ws": "^8.18.0"
   }
 }

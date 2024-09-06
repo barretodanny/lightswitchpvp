@@ -37,7 +37,7 @@ function LobbyPostGame({ lobby, self, handlePlayAgain }: LobbyPostGameProps) {
         <div className={styles.userListWrapper}>
           {lobby.connectedUsers.map((user, index) => {
             if (index === 0) {
-              return <></>;
+              return <div key={index}></div>;
             }
 
             return (

@@ -287,7 +287,9 @@ function Lobby({
                     }}
                   >
                     {/* @ts-ignore */}
-                    {lobby.connectedUsers[selfIndex].readyStatus
+                    {lobby.connectedUsers[selfIndex] &&
+                    // @ts-ignore
+                    lobby.connectedUsers[selfIndex].readyStatus
                       ? "Unready"
                       : "Ready"}
                   </button>

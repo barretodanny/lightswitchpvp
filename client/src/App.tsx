@@ -44,7 +44,7 @@ function App() {
   }, [self?.lobby]);
 
   function connectToServer() {
-    const socket = new WebSocket("ws://localhost:3000");
+    const socket = new WebSocket("wss://lspgame.dannbarr.dev");
 
     socket.onmessage = async (event) => {
       const data = JSON.parse(event.data);
